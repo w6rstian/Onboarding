@@ -1,21 +1,20 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Onboarding.Models
 {
     public class Course
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
         public string Name { get; set; }
-        
-        [ForeignKey("Company")]
-        public int CompanyID { get; set; } 
-        public Company Company { get; set; }
+        public int CompanyId { get; set; }
 
-        public List<User> Users { get; set; } = new List<User>();
-        public List<Task> Tasks { get; set; } = new List<Task>();
-        //public List<CourseUser> CourseUsers { get; set; } = new List<CourseUser>(); //new
+        public Company Company { get; set; }
+        public ICollection<UserCourse> UserCourses { get; set; }
+        public ICollection<Task> Tasks { get; set; }
+        public ICollection<Test> Tests { get; set; } //nowe
     }
 }

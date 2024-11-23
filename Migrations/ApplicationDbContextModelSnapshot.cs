@@ -22,49 +22,33 @@ namespace Onboarding.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CourseUser", b =>
-                {
-                    b.Property<int>("CoursesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CoursesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("CourseUser (Dictionary<string, object>)");
-                });
-
             modelBuilder.Entity("Onboarding.Models.Announcement", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PublishDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("Announcement");
+                    b.ToTable("Announcements");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Article", b =>
@@ -86,53 +70,48 @@ namespace Onboarding.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Article");
+                    b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Company", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasMaxLength(11)
-                        .HasColumnType("nvarchar(11)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostCode")
                         .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Street")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StreetNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("StreetNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.ToTable("Company");
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Course", b =>
@@ -143,7 +122,7 @@ namespace Onboarding.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CompanyID")
+                    b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -152,12 +131,12 @@ namespace Onboarding.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyID");
+                    b.HasIndex("CompanyId");
 
-                    b.ToTable("Course");
+                    b.ToTable("Courses");
                 });
 
-            modelBuilder.Entity("Onboarding.Models.CourseUser", b =>
+            modelBuilder.Entity("Onboarding.Models.CourseTask", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -165,22 +144,30 @@ namespace Onboarding.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CourseId")
+                    b.Property<string>("Completed")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(1)");
+
+                    b.Property<int>("TaskId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TestResult")
+                    b.Property<int>("TestResult")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
+                    b.Property<byte[]>("Upload")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("UserCourseId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseId");
+                    b.HasIndex("TaskId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserCourseId");
 
-                    b.ToTable("CourseUser");
+                    b.ToTable("CourseTasks");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Link", b =>
@@ -191,6 +178,10 @@ namespace Onboarding.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("LinkUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -198,15 +189,11 @@ namespace Onboarding.Migrations
                     b.Property<int>("TaskId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("Link");
+                    b.ToTable("Links");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Message", b =>
@@ -219,8 +206,7 @@ namespace Onboarding.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ReceiverId")
                         .HasColumnType("int");
@@ -237,7 +223,7 @@ namespace Onboarding.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Question", b =>
@@ -248,19 +234,29 @@ namespace Onboarding.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.PrimitiveCollection<string>("Answers")
+                    b.Property<string>("AnswerA")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AnswerB")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AnswerC")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AnswerD")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CorrectAnswer")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TestId")
                         .HasColumnType("int");
@@ -269,16 +265,16 @@ namespace Onboarding.Migrations
 
                     b.HasIndex("TestId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Reward", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -287,22 +283,22 @@ namespace Onboarding.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GiverId")
+                    b.Property<int>("Giver")
                         .HasColumnType("int");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
-                    b.Property<int>("ReceiverId")
+                    b.Property<int>("Receiver")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GiverId");
+                    b.HasIndex("Giver");
 
-                    b.HasIndex("ReceiverId");
+                    b.HasIndex("Receiver");
 
-                    b.ToTable("Reward");
+                    b.ToTable("Rewards");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Task", b =>
@@ -331,33 +327,9 @@ namespace Onboarding.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Task");
-                });
+                    b.HasIndex("MentorId");
 
-            modelBuilder.Entity("Onboarding.Models.TaskUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TaskId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TaskUser");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Test", b =>
@@ -373,14 +345,16 @@ namespace Onboarding.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Test");
+                    b.ToTable("Tests");
                 });
 
             modelBuilder.Entity("Onboarding.Models.User", b =>
@@ -397,29 +371,25 @@ namespace Onboarding.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("Login")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(1019)
-                        .HasColumnType("nvarchar(1019)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -427,48 +397,41 @@ namespace Onboarding.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("TaskUser", b =>
+            modelBuilder.Entity("Onboarding.Models.UserCourse", b =>
                 {
-                    b.Property<int>("TasksId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("UsersId")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.HasKey("TasksId", "UsersId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("UsersId");
+                    b.HasKey("Id");
 
-                    b.ToTable("TaskUser (Dictionary<string, object>)");
-                });
+                    b.HasIndex("CourseId");
 
-            modelBuilder.Entity("CourseUser", b =>
-                {
-                    b.HasOne("Onboarding.Models.Course", null)
-                        .WithMany()
-                        .HasForeignKey("CoursesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasIndex("UserId");
 
-                    b.HasOne("Onboarding.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.ToTable("UserCourses");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Announcement", b =>
                 {
-                    b.HasOne("Onboarding.Models.User", "User")
-                        .WithMany()
+                    b.HasOne("Onboarding.Models.User", "Creator")
+                        .WithMany("Announcements")
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Article", b =>
@@ -486,30 +449,30 @@ namespace Onboarding.Migrations
                 {
                     b.HasOne("Onboarding.Models.Company", "Company")
                         .WithMany("Courses")
-                        .HasForeignKey("CompanyID")
+                        .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("Onboarding.Models.CourseUser", b =>
+            modelBuilder.Entity("Onboarding.Models.CourseTask", b =>
                 {
-                    b.HasOne("Onboarding.Models.Course", "Course")
-                        .WithMany()
-                        .HasForeignKey("CourseId")
+                    b.HasOne("Onboarding.Models.Task", "Task")
+                        .WithMany("CourseTasks")
+                        .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Onboarding.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                    b.HasOne("Onboarding.Models.UserCourse", "UserCourse")
+                        .WithMany("CourseTasks")
+                        .HasForeignKey("UserCourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Course");
+                    b.Navigation("Task");
 
-                    b.Navigation("User");
+                    b.Navigation("UserCourse");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Link", b =>
@@ -526,15 +489,15 @@ namespace Onboarding.Migrations
             modelBuilder.Entity("Onboarding.Models.Message", b =>
                 {
                     b.HasOne("Onboarding.Models.User", "Receiver")
-                        .WithMany()
+                        .WithMany("ReceivedMessages")
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Onboarding.Models.User", "Sender")
-                        .WithMany()
+                        .WithMany("SentMessages")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Receiver");
@@ -555,21 +518,21 @@ namespace Onboarding.Migrations
 
             modelBuilder.Entity("Onboarding.Models.Reward", b =>
                 {
-                    b.HasOne("Onboarding.Models.User", "Giver")
+                    b.HasOne("Onboarding.Models.User", "GiverUser")
                         .WithMany("GivenRewards")
-                        .HasForeignKey("GiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("Giver")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Onboarding.Models.User", "Receiver")
+                    b.HasOne("Onboarding.Models.User", "ReceiverUser")
                         .WithMany("ReceivedRewards")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("Receiver")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Giver");
+                    b.Navigation("GiverUser");
 
-                    b.Navigation("Receiver");
+                    b.Navigation("ReceiverUser");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Task", b =>
@@ -580,32 +543,21 @@ namespace Onboarding.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Onboarding.Models.User", "Mentor")
+                        .WithMany()
+                        .HasForeignKey("MentorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Course");
-                });
 
-            modelBuilder.Entity("Onboarding.Models.TaskUser", b =>
-                {
-                    b.HasOne("Onboarding.Models.Task", "Task")
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Onboarding.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Task");
-
-                    b.Navigation("User");
+                    b.Navigation("Mentor");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Test", b =>
                 {
                     b.HasOne("Onboarding.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("Tests")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -630,19 +582,23 @@ namespace Onboarding.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("TaskUser", b =>
+            modelBuilder.Entity("Onboarding.Models.UserCourse", b =>
                 {
-                    b.HasOne("Onboarding.Models.Task", null)
-                        .WithMany()
-                        .HasForeignKey("TasksId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Onboarding.Models.Course", "Course")
+                        .WithMany("UserCourses")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Onboarding.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("Onboarding.Models.User", "User")
+                        .WithMany("UserCourses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Company", b =>
@@ -655,11 +611,17 @@ namespace Onboarding.Migrations
             modelBuilder.Entity("Onboarding.Models.Course", b =>
                 {
                     b.Navigation("Tasks");
+
+                    b.Navigation("Tests");
+
+                    b.Navigation("UserCourses");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Task", b =>
                 {
                     b.Navigation("Articles");
+
+                    b.Navigation("CourseTasks");
 
                     b.Navigation("Links");
                 });
@@ -671,9 +633,22 @@ namespace Onboarding.Migrations
 
             modelBuilder.Entity("Onboarding.Models.User", b =>
                 {
+                    b.Navigation("Announcements");
+
                     b.Navigation("GivenRewards");
 
+                    b.Navigation("ReceivedMessages");
+
                     b.Navigation("ReceivedRewards");
+
+                    b.Navigation("SentMessages");
+
+                    b.Navigation("UserCourses");
+                });
+
+            modelBuilder.Entity("Onboarding.Models.UserCourse", b =>
+                {
+                    b.Navigation("CourseTasks");
                 });
 #pragma warning restore 612, 618
         }

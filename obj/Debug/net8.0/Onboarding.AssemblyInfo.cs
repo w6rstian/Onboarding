@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Onboarding")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+05b9213b9ca7b4bc83ab2384f3b6280e7eb29e41")]
 [assembly: System.Reflection.AssemblyProductAttribute("Onboarding")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Onboarding")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

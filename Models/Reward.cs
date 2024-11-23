@@ -1,28 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Onboarding.Models
 {
     public class Reward
     {
-        [Key]
-        public int ID { get; set; }
-
-        [ForeignKey("ReceiverId")]
-        public User Receiver { get; set; } 
-        public int ReceiverId { get; set; } 
-
-        [ForeignKey("GiverId")]
-        public User Giver { get; set; }
-        public int GiverId { get; set; } 
-
-        [Range(1, 10)]
+        public int Id { get; set; }
+        public int Giver { get; set; }
+        public int Receiver { get; set; }
         public int Rating { get; set; }
-
         public string Feedback { get; set; }
-
-        [Required]
         public DateTime CreatedAt { get; set; }
-    }
 
+        public User GiverUser { get; set; }
+        public User ReceiverUser { get; set; }
+    }
 }

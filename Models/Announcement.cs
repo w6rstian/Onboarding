@@ -1,25 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Onboarding.Models
 {
     public class Announcement
     {
-        [Key]
-        public int ID { get; set; }
-
-        [Required]
-        [MaxLength(50)]
+        public int Id { get; set; }
         public string Title { get; set; }
-
-        [Required]
         public string Description { get; set; }
-
-        [Required]
-        public DateTime PublishDate { get; set; }
-
-        [ForeignKey("User")]
+        public DateTime Date { get; set; }
         public int CreatedBy { get; set; }
-        public User User { get; set; }
+
+        public User Creator { get; set; }
     }
 }

@@ -1,25 +1,26 @@
-﻿using Microsoft.AspNetCore.Components.Web;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Onboarding.Models
 {
     public class Task
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
+        public int MentorId { get; set; }
         public string Title { get; set; }
-        
         public string Description { get; set; }
-
-        public int MentorId { get; set; }      
-
         public int CourseId { get; set; }
-        public Course Course { get; set; }
 
-        public List<Article> Articles { get; set; } = new List<Article>();
-        public List<Link> Links { get; set; } = new List<Link>();
-        public List<User> Users { get; set; } = new List<User>();
+        public Course Course { get; set; }
+        //public ICollection<Test> Tests { get; set; }
+        public ICollection<Article> Articles { get; set; }
+        public ICollection<Link> Links { get; set; }
+        public User Mentor { get; set; }
+
+        public ICollection<CourseTask> CourseTasks { get; set; } // Dodaj tę właściwość
     }
 }

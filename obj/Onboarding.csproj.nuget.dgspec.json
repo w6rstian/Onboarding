@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\Onboarding\\Onboarding.csproj": {}
+    "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\ZespolowyGIT\\Onboarding.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\Onboarding\\Onboarding.csproj": {
+    "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\ZespolowyGIT\\Onboarding.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\Onboarding\\Onboarding.csproj",
+        "projectUniqueName": "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\ZespolowyGIT\\Onboarding.csproj",
         "projectName": "Onboarding",
-        "projectPath": "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\Onboarding\\Onboarding.csproj",
+        "projectPath": "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\ZespolowyGIT\\Onboarding.csproj",
         "packagesPath": "C:\\Users\\Thejwiddd\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\Onboarding\\obj\\",
+        "outputPath": "C:\\Users\\Thejwiddd\\Desktop\\STUDIA\\STUDIA SEMESTR 5\\Zespolowy\\ZespolowyGIT\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

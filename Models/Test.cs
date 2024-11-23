@@ -1,22 +1,19 @@
-﻿namespace Onboarding.Models
-{
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
+namespace Onboarding.Models
+{
     public class Test
     {
-        [Key]
         public int Id { get; set; }
-
-        [Required]
-        [MaxLength(200)]
         public string Name { get; set; }
+        public int TaskId { get; set; }
 
-        [ForeignKey("Course")]
-        public int CourseId { get; set; }
-        public Course Course { get; set; }
-
-        public List<Question> Questions { get; set; } = new List<Question>(); 
+        //public Task Task { get; set; }
+        public Course Course { get; set; } //nowe
+        public ICollection<Question> Questions { get; set; }
     }
-
 }
