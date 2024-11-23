@@ -1,0 +1,46 @@
+@model Onboarding.Models.Company
+
+<h2>Register Company</h2>
+
+<form asp-action="Register" asp-controller="Company" method="post">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+    <div>
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" />
+        <span asp-validation-for="PhoneNumber"></span>
+    </div>
+    <div>
+        <label asp-for="City"></label>
+        <input asp-for="City" />
+        <span asp-validation-for="City"></span>
+    </div>
+    <div>
+        <label asp-for="PostCode"></label>
+        <input asp-for="PostCode" />
+        <span asp-validation-for="PostCode"></span>
+    </div>
+    <div>
+        <label asp-for="Street"></label>
+        <input asp-for="Street" />
+        <span asp-validation-for="Street"></span>
+    </div>
+    <div>
+        <label asp-for="StreetNumber"></label>
+        <input asp-for="StreetNumber" />
+        <span asp-validation-for="StreetNumber"></span>
+    </div>
+    <div>
+        <label asp-for="Country"></label>
+        <input asp-for="Country" />
+        <span asp-validation-for="Country"></span>
+    </div>
+    <button type="submit">Register</button>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

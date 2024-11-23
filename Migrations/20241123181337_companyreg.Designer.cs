@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Onboarding.Data;
 
@@ -11,9 +12,11 @@ using Onboarding.Data;
 namespace Onboarding.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241123181337_companyreg")]
+    partial class companyreg
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,8 +86,7 @@ namespace Onboarding.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
                         .IsRequired()
@@ -92,8 +94,7 @@ namespace Onboarding.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -450,7 +451,7 @@ namespace Onboarding.Migrations
             modelBuilder.Entity("Onboarding.Models.Course", b =>
                 {
                     b.HasOne("Onboarding.Models.Company", "Company")
-                        .WithMany()
+                        .WithMany("Courses")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -574,7 +575,7 @@ namespace Onboarding.Migrations
                         .HasForeignKey("BuddyId");
 
                     b.HasOne("Onboarding.Models.Company", "Company")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -601,6 +602,13 @@ namespace Onboarding.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Onboarding.Models.Company", b =>
+                {
+                    b.Navigation("Courses");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Course", b =>
