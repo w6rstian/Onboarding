@@ -4,6 +4,10 @@ using Onboarding.Services;
 
 namespace Onboarding.Controllers
 {
+	/// <summary>
+	/// This controller can send emails using data from EmailRequest model and EmailService.
+	/// Returns Ok or error code.
+	/// </summary>
 	[ApiController]
 	[Route("api/[controller]")]
 	public class EmailController : Controller

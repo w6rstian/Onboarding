@@ -3,6 +3,9 @@ using System.Net.Mail;
 
 namespace Onboarding.Services
 {
+	/// <summary>
+	/// This service sends emails asynchronically using email server configuration and authentication credentials from appsettings.json.
+	/// </summary>
 	// MAKE SURE TO UPDATE APPSETTINGS.JSON WITH VALID CREDENTIALS FOR EMAIL AUTHENTICATION
 	public class EmailService
 	{
