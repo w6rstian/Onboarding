@@ -26,7 +26,7 @@ namespace Onboarding.Services
 
 		public EmailService(IConfiguration configuration)
 		{
-			_configuration = configuration
+			_configuration = configuration;
 		}
 
 		public async Task SendEmailAsync(string recipientEmail, string subject, string messageBody)
