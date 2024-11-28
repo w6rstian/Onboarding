@@ -15,9 +15,7 @@ namespace Onboarding.Models
         public string Login { get; set; }
         public string Password { get; set; }
         public int? BuddyId { get; set; }
-        public int CompanyId { get; set; }
 
-        public Company Company { get; set; }
         public User Buddy { get; set; }
         public ICollection<UserCourse> UserCourses { get; set; }
         public ICollection<Message> SentMessages { get; set; }
