@@ -73,47 +73,6 @@ namespace Onboarding.Migrations
                     b.ToTable("Articles");
                 });
 
-            modelBuilder.Entity("Onboarding.Models.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StreetNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Companies");
-                });
-
             modelBuilder.Entity("Onboarding.Models.Course", b =>
                 {
                     b.Property<int>("Id")
@@ -130,8 +89,6 @@ namespace Onboarding.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
 
                     b.ToTable("Courses");
                 });
@@ -368,9 +325,6 @@ namespace Onboarding.Migrations
                     b.Property<int?>("BuddyId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Login")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -394,8 +348,6 @@ namespace Onboarding.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BuddyId");
-
-                    b.HasIndex("CompanyId");
 
                     b.ToTable("Users");
                 });
@@ -443,17 +395,6 @@ namespace Onboarding.Migrations
                         .IsRequired();
 
                     b.Navigation("Task");
-                });
-
-            modelBuilder.Entity("Onboarding.Models.Course", b =>
-                {
-                    b.HasOne("Onboarding.Models.Company", "Company")
-                        .WithMany("Courses")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Onboarding.Models.CourseTask", b =>
@@ -571,15 +512,7 @@ namespace Onboarding.Migrations
                         .WithMany()
                         .HasForeignKey("BuddyId");
 
-                    b.HasOne("Onboarding.Models.Company", "Company")
-                        .WithMany("Users")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Buddy");
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Onboarding.Models.UserCourse", b =>
@@ -599,13 +532,6 @@ namespace Onboarding.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Onboarding.Models.Company", b =>
-                {
-                    b.Navigation("Courses");
-
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Course", b =>
