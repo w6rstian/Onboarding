@@ -5,7 +5,7 @@
 	/// </summary>
 	public interface IUserRepository
 	{
-		async Task<bool> UserExistsByLoginAsync(string login);
-		async Task<bool> UserExistsByEmailAsync(string email);
+		Task<bool> UserExistsByLoginAsync(string login);
+		Task<bool> UserExistsByEmailAsync(string email);
 	}
 }

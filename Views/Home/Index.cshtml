@@ -1,57 +1,48 @@
 ﻿@{
-    ViewData["Title"] = "Strona Główna";
+    ViewData["Title"] = "Logowanie";
 }
+<head>
+    <link rel="stylesheet" href="~/css/colors.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="background-color: var(--bg-color);">
 
-<div class="container my-5 text-center">
-    <h1>Witamy w Platformie Onboardingowej!</h1>
-    <p class="lead">Poznaj rozwiązanie, które ułatwia proces wdrażania nowych pracowników i zarządzanie ich rozwojem.</p>
-</div>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left Column - Information -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column justify-content-start">
+                <h1>Witamy na Platformie Onboardingowej</h1>
+                <p class="lead">Platforma onboardingowa ma na celu uproszczenie i optymalizację procesu wdrażania nowych pracowników w firmie. Dzięki zastosowaniu strukturyzowanego systemu wsparcia, platforma umożliwia płynne i efektywne przyjęcie nowo zatrudnionych do firmy, przyspieszając ich adaptację oraz poprawiając ich efektywność już na wczesnym etapie zatrudnienia.</p>
+                <h5>Dołącz do nas i ułatw sobie proces dołączenia do firmy!</h5>
+            </div>
+        </div>
 
-<section class="roles py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center mb-4">Nasze funkcjonalności dla różnych ról</h2>
-        <div class="row">
-            <div class="col-md-6 col-lg-4 mb-4">
-                <h3>HR</h3>
-                <p>
-
-                    Możliwość przypisywania kursów i mentorów.<br>
-                    Śledzenie postępów nowych pracowników.<br>
-                    Zarządzanie dostępami i tworzenie struktury wdrożenia.
-                </p>
-            </div><div class="col-md-6 col-lg-4 mb-4">
-                <h3>Manager</h3><p>
-                    Tworzenie kursów dostosowanych do potrzeb zespołu.<br>
-                    Monitorowanie wyników testów i zadań.<br>
-                    Przypisywanie mentorów i zarządzanie multimedialnymi zasobami.
-                </p>
-            </div><div class="col-md-6 col-lg-4 mb-4">
-                <h3>Buddy</h3><p>
-                    Wsparcie nowych pracowników w procesie onboardingu.<br>
-                    Komunikacja w czasie rzeczywistym przez czat.<br>
-                    Udzielanie wskazówek i monitorowanie postępów.
-                </p>
-            </div><div class="col-md-6 col-lg-4 mb-4">
-                <h3>Nowy</h3><p>
-                    Wgląd w przypisane kursy i zadania.<br>
-                    Możliwość raportowania postępów i wypełniania testów.<br>
-                    Dostęp do materiałów pomocniczych i czatu z mentorem lub buddy.
-                </p>
-            </div><div class="col-md-6 col-lg-4 mb-4">
-                <h3>Mentor</h3><p>
-                    Planowanie zadań i check-inów dla nowych pracowników.<br>
-                    Ocena postępów w realizacji przypisanych zadań.<br>
-                    Wysyłanie feedbacku i wspieranie procesu nauki.
-                </p>
+        <!-- Right Column - Login Form -->
+        <div class="col-md-6">
+            <div class="login-container d-flex flex-column justify-content-start">
+                <div class="login-header">
+                    <h1>Logowanie</h1>
+                </div>
+                <div class="login-form">
+                    <form method="post">
+                        <!-- Formularz z miejscem na dane -->
+                        <div class="form-group">
+                            <label for="email">Adres e-mail</label>
+                            <input type="email" id="email" name="Email" placeholder="Wpisz adres e-mail" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Hasło</label>
+                            <input type="password" id="password" name="Password" placeholder="Wpisz hasło" class="form-control" required />
+                        </div>
+                        <!-- Przyciski -->
+                        <a href="/User/MainPage" class="btn btn-primary btn-block mt-3">Zaloguj się</a>
+                    </form>
+                    <div class="divider mt-4 mb-4">lub</div>
+                    <a href="/User/CreateEmployee" class="btn btn-success btn-block">Utwórz nowe konto</a>
+                </div>
             </div>
         </div>
     </div>
-</section>
-
-<section class="cta py-5 text-center">
-    <div class="container">
-        <h2>Gotowy na usprawnienie swojego onboardingu?</h2>
-        <p class="lead">Przygotuj swoją organizację do lepszego wdrażania pracowników.</p>
-        <a href="/User/CreateEmployee" class="btn btn-primary btn-lg">Zacznij teraz</a>
-    </div>
-</section>
+</div>
+</body>
