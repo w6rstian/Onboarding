@@ -8,5 +8,10 @@ namespace Onboarding.Controllers
         {
             return View();
         }
+        public IActionResult MainPage()
+        {
+            return View();
+        }
     }
+
 }
