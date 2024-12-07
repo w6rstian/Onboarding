@@ -1,13 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Onboarding.Models;
 using System.Drawing;
 
 namespace Onboarding.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
+        public DbSet<Company> Companies { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Models.Task> Tasks { get; set; }
         public DbSet<Test> Tests { get; set; }
@@ -25,6 +28,8 @@ namespace Onboarding.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<UserCourse>()
                 .HasKey(uc => uc.Id);
 
