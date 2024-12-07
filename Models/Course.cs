@@ -12,7 +12,6 @@ namespace Onboarding.Models
         public string Name { get; set; }
         public int CompanyId { get; set; }
 
-        public Company Company { get; set; }
         public ICollection<UserCourse> UserCourses { get; set; }
         public ICollection<Task> Tasks { get; set; }
         public ICollection<Test> Tests { get; set; } //nowe

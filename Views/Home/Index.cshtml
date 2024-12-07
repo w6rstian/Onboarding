@@ -1,8 +1,48 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Logowanie";
 }
+<head>
+    <link rel="stylesheet" href="~/css/colors.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="background-color: var(--bg-color);">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left Column - Information -->
+        <div class="col-md-6">
+            <div class="d-flex flex-column justify-content-start">
+                <h1>Witamy na Platformie Onboardingowej</h1>
+                <p class="lead">Platforma onboardingowa ma na celu uproszczenie i optymalizację procesu wdrażania nowych pracowników w firmie. Dzięki zastosowaniu strukturyzowanego systemu wsparcia, platforma umożliwia płynne i efektywne przyjęcie nowo zatrudnionych do firmy, przyspieszając ich adaptację oraz poprawiając ich efektywność już na wczesnym etapie zatrudnienia.</p>
+                <h5>Dołącz do nas i ułatw sobie proces dołączenia do firmy!</h5>
+            </div>
+        </div>
+
+        <!-- Right Column - Login Form -->
+        <div class="col-md-6">
+            <div class="login-container d-flex flex-column justify-content-start">
+                <div class="login-header">
+                    <h1>Logowanie</h1>
+                </div>
+                <div class="login-form">
+                    <form method="post">
+                        <!-- Formularz z miejscem na dane -->
+                        <div class="form-group">
+                            <label for="email">Adres e-mail</label>
+                            <input type="email" id="email" name="Email" placeholder="Wpisz adres e-mail" class="form-control" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Hasło</label>
+                            <input type="password" id="password" name="Password" placeholder="Wpisz hasło" class="form-control" required />
+                        </div>
+                        <!-- Przyciski -->
+                        <a href="/User/MainPage" class="btn btn-primary btn-block mt-3">Zaloguj się</a>
+                    </form>
+                    <div class="divider mt-4 mb-4">lub</div>
+                    <a href="/User/CreateEmployee" class="btn btn-success btn-block">Utwórz nowe konto</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+</body>

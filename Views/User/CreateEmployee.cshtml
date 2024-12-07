@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Tworzenie Konta Pracownika";
+}
+<head>
+    <link rel="stylesheet" href="~/css/colors.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="background-color: var(--bg-color);">
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Tworzenie konta nowego pracownika</h2>
+    <form>
+        <div class="mb-3">
+            <label for="name" class="form-label">Imię</label>
+            <input type="text" class="form-control" id="name" placeholder="Wprowadź imię">
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Nazwisko</label>
+            <input type="text" class="form-control" id="lastname" placeholder="Wprowadź nazwisko">
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Adres email</label>
+            <input type="email" class="form-control" id="email" placeholder="Wprowadź adres email">
+        </div>
+        <div class="mb-3">
+            <label for="position" class="form-label">Stanowisko</label>
+            <input type="text" class="form-control" id="position" placeholder="Wprowadź stanowisko">
+        </div>
+        <div class="mb-3">
+            <label for="department" class="form-label">Dział</label>
+            <select class="form-control" id="department">
+                <option value="" disabled selected>Rozwiń aby wybrać dział</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Utwórz konto</button>
+    </form>
+</div>
+</body>
