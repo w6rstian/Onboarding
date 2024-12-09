@@ -1,5 +1,63 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Admin Panel";
 }
+<head>
+    <link rel="stylesheet" href="~/css/colors.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="background-color: var(--bg-color);">
+
+    <div class="container mt-5">
+        <header class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="main-title">Panel Administratora</h1>
+            <div class="header-buttons">
+                <a href="/User/MainPage" class="btn btn-secondary">Wróć na stronę główną</a>
+                <a href="/User/MyAccount" class="btn btn-secondary">Moje konto</a>
+            </div>
+        </header>
+
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="action-buttons">
+                    <a href="/Admin/ManageUsers" class="btn btn-primary">Zarządzaj użytkownikami</a>
+                    <!-- Tymczasowo tutaj dodawanie konta pracownika-->
+                    <a href="/HR/CreateEmployee" class="btn btn-primary">Dodaj pracownika</a>
+                    <!-- Tymczasowo dodawanie kursu bedzie tutaj-->
+                    <a href="/Course/CreateCourse" class="btn btn-primary">Dodaj kurs</a>
+                    <a href="/Admin/ManageRoles" class="btn btn-primary">Zarządzaj rolami</a>
+                    <a href="/Admin/ViewReports" class="btn btn-primary">Raporty i statystyki</a>
+                    <a href="/Admin/SystemSettings" class="btn btn-primary">Ustawienia systemu</a>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <section>
+                    <h2 class="role-description">Przegląd panelu administracyjnego</h2>
+                    <p class="role-description">
+                        Witaj w panelu administracyjnym! Tutaj możesz zarządzać użytkownikami, przydzielać role, przeglądać raporty oraz konfigurować ustawienia systemowe.
+                        Użyj menu po lewej stronie, aby nawigować między sekcjami.
+                    </p>
+                </section>
+
+                <section class="mt-4">
+                    <h3 class="role-description">Statystyki</h3>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="stat-box p-3 bg-light text-center border rounded">
+                                <h5>Użytkownicy</h5>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-box p-3 bg-light text-center border rounded">
+                                <h5>Nowe zgłoszenia</h5>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+</body>

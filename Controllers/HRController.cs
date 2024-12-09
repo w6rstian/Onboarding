@@ -2,13 +2,11 @@
 
 namespace Onboarding.Controllers
 {
-    public class UserController : Controller
+    public class HRController : Controller
     {
-
-        public IActionResult MainPage()
+        public IActionResult CreateEmployee()
         {
             return View();
         }
     }
-
 }

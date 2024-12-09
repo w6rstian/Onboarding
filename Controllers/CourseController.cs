@@ -2,13 +2,11 @@
 
 namespace Onboarding.Controllers
 {
-    public class UserController : Controller
+    public class CourseController : Controller
     {
-
-        public IActionResult MainPage()
+        public IActionResult CreateCourse()
         {
             return View();
         }
     }
-
 }
