@@ -14,6 +14,6 @@ namespace Onboarding.Models
 
         public ICollection<UserCourse> UserCourses { get; set; }
         public ICollection<Task> Tasks { get; set; }
-        public ICollection<Test> Tests { get; set; } //nowe
+        public ICollection<Test> Tests { get; set; } 
     }
 }
