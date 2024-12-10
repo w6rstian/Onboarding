@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Onboarding.Data;
 using Onboarding.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace Onboarding.Controllers
 {
@@ -9,19 +12,18 @@ namespace Onboarding.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 
-		// Konstruktor z wstrzykiwaniem zależności
 		public NotificationsController(ApplicationDbContext context)
 		{
 			_context = context;
 		}
 
-		// Wyświetlanie powiadomień użytkownika
+		// GET: Notifications
 		public async Task<IActionResult> Index()
 		{
-			// Załóżmy, że identyfikator użytkownika jest dostępny w HttpContext.User.Identity
-			var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+			// Pobierz Id zalogowanego użytkownika z claims
+			int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var userId);
 
-			if (userId == null)
+			if (userId == 0)
 			{
 				return Unauthorized();
 			}
@@ -34,49 +36,138 @@ namespace Onboarding.Controllers
 			return View(notifications);
 		}
 
-		// Tworzenie nowego powiadomienia
-		[HttpPost]
-		public async Task<IActionResult> Create(string userId, string message)
+		// GET: Notifications/Details/5
+		public async Task<IActionResult> Details(int? id)
 		{
-			if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(message))
+			if (id == null)
 			{
-				return BadRequest("User ID and message cannot be empty.");
+				return NotFound();
 			}
 
-			var notification = new Notification
-			{
-				UserId = userId,
-				Message = message,
-				CreatedAt = DateTime.UtcNow,
-				IsRead = false
-			};
+			var notification = await _context.Notifications
+				.FirstOrDefaultAsync(n => n.Id == id);
 
-			_context.Notifications.Add(notification);
-			await _context.SaveChangesAsync();
-
-			return RedirectToAction(nameof(Index));
-		}
-
-		// Oznaczanie powiadomienia jako przeczytane
-		[HttpPost]
-		public async Task<IActionResult> MarkAsRead(int id)
-		{
-			var notification = await _context.Notifications.FindAsync(id);
 			if (notification == null)
 			{
 				return NotFound();
 			}
 
-			// Załóżmy, że identyfikator użytkownika to User.Identity.Name
-			if (notification.UserId != User.Identity.Name)
+			return View(notification);
+		}
+
+		// GET: Notifications/Create
+		public IActionResult Create()
+		{
+			return View();
+		}
+
+		// POST: Notifications/Create
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Create([Bind("Id,UserId,Title,Message,CreatedAt")] Notification notification)
+		{
+			if (ModelState.IsValid)
 			{
-				return Forbid();
+				notification.CreatedAt = DateTime.UtcNow; // Ustaw aktualną datę
+				_context.Add(notification);
+				await _context.SaveChangesAsync();
+				return RedirectToAction(nameof(Index));
 			}
 
-			notification.IsRead = true;
-			await _context.SaveChangesAsync();
+			return View(notification);
+		}
+
+		// GET: Notifications/Edit/5
+		public async Task<IActionResult> Edit(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var notification = await _context.Notifications.FindAsync(id);
+
+			if (notification == null)
+			{
+				return NotFound();
+			}
+
+			return View(notification);
+		}
+
+		// POST: Notifications/Edit/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(int id, [Bind("Id,UserId,Title,Message,CreatedAt")] Notification notification)
+		{
+			if (id != notification.Id)
+			{
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					_context.Update(notification);
+					await _context.SaveChangesAsync();
+				}
+				catch (DbUpdateConcurrencyException)
+				{
+					if (!NotificationExists(notification.Id))
+					{
+						return NotFound();
+					}
+					else
+					{
+						throw;
+					}
+				}
+
+				return RedirectToAction(nameof(Index));
+			}
+
+			return View(notification);
+		}
+
+		// GET: Notifications/Delete/5
+		public async Task<IActionResult> Delete(int? id)
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
+
+			var notification = await _context.Notifications
+				.FirstOrDefaultAsync(n => n.Id == id);
+
+			if (notification == null)
+			{
+				return NotFound();
+			}
+
+			return View(notification);
+		}
+
+		// POST: Notifications/Delete/5
+		[HttpPost, ActionName("Delete")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteConfirmed(int id)
+		{
+			var notification = await _context.Notifications.FindAsync(id);
+
+			if (notification != null)
+			{
+				_context.Notifications.Remove(notification);
+				await _context.SaveChangesAsync();
+			}
 
 			return RedirectToAction(nameof(Index));
+		}
+
+		private bool NotificationExists(int id)
+		{
+			return _context.Notifications.Any(e => e.Id == id);
 		}
 	}
 }
