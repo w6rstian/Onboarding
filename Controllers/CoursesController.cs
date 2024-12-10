@@ -54,7 +54,7 @@ namespace Onboarding.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,CompanyId")] Course course)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Course course)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace Onboarding.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CompanyId")] Course course)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Course course)
         {
             if (id != course.Id)
             {
