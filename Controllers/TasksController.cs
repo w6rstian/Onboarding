@@ -25,7 +25,7 @@ namespace Onboarding.Controllers
         {
             var applicationDbContext = _context.Tasks.Include(t => t.Course).Include(t => t.Mentor);
             return View(await applicationDbContext.ToListAsync());
-        }
+        }   
 
         // GET: Tasks/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -58,17 +58,52 @@ namespace Onboarding.Controllers
         // POST: Tasks/Create.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MentorId,Title,Description,CourseId")] Task task)
+        public async Task<IActionResult> Create(int MentorId, string Title, string Description, int CourseId)
         {
-            if (ModelState.IsValid)
+            if (string.IsNullOrEmpty(Title) || string.IsNullOrEmpty(Description) || MentorId == 0 || CourseId == 0)
             {
-                _context.Add(task);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(string.Empty, "All fields are required.");
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", task.CourseId);
-            ViewData["MentorId"] = new SelectList(_context.Users, "Id", "Id", task.MentorId);
-            return View(task);
+
+            if (!ModelState.IsValid)    
+            {
+                // Jeśli formularz nie jest poprawny, ponownie wyświetl formularz
+                ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
+                ViewData["MentorId"] = new SelectList(_context.Users, "Id", "Id");
+                return View();
+            }
+
+            var course = await _context.Courses
+                .FirstOrDefaultAsync(c => c.Id == CourseId);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            var mentor = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == MentorId);
+
+            if (mentor == null)
+            {
+                return NotFound();
+            }
+
+            var task = new Task
+            {
+                MentorId = MentorId,
+                Title = Title,
+                Description = Description,
+                CourseId = CourseId,
+                Mentor = mentor,  
+                Course = course   
+            };
+
+            course.Tasks.Add(task);
+            _context.Add(task);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Tasks/Edit/5

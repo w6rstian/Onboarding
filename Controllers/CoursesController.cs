@@ -55,7 +55,7 @@ namespace Onboarding.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Course course)
-        {
+        {   
             if (ModelState.IsValid)
             {
                 _context.Add(course);
