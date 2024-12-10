@@ -21,10 +21,11 @@ namespace Onboarding.Data
 
         public DbSet<UserCourse> UserCourses { get; set; }
         public DbSet<CourseTask> CourseTasks { get; set; }
+		public DbSet<Notification> Notifications { get; set; }
 
 
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserCourse>()
                 .HasKey(uc => uc.Id);
@@ -119,6 +120,15 @@ namespace Onboarding.Data
                 .WithMany(t => t.Links)
                 .HasForeignKey(l => l.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
-        }
+
+			modelBuilder.Entity<Notification>()
+				.HasKey(n => n.Id);
+
+			modelBuilder.Entity<Notification>()
+				.HasOne(n => n.User)
+				.WithMany(u => u.Notifications)
+				.HasForeignKey(n => n.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
+		}
     }
 }
