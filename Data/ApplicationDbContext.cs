@@ -10,7 +10,6 @@ namespace Onboarding.Data
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         //public DbSet<User> Users { get; set; }
-        public DbSet<Company> Companies { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Models.Task> Tasks { get; set; }
         public DbSet<Test> Tests { get; set; }
