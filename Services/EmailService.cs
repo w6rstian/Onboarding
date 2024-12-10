@@ -1,5 +1,5 @@
 ﻿using MimeKit;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
 
 namespace Onboarding.Services
 {
