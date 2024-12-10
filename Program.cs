@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Onboarding.Data;
 using Microsoft.AspNetCore.Identity;
 using Onboarding.Models;
+using Onboarding.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<EmailService>();
 
 var app = builder.Build();
 
