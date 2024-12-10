@@ -1,4 +1,4 @@
-namespace Onboarding.Models
+namespace Onboarding.ViewModels
 {
     public class ErrorViewModel
     {
