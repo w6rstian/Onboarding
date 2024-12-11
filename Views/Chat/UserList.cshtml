@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Onboarding.Models.User>
+
+@{
+    ViewBag.Title = "User List";
+}
+
+<h2>User List</h2>
+
+<ul>
+    @foreach (var user in Model)
+    {
+        <li>
+            <a href="@Url.Action("Index", "Chat", new { receiverId = user.Id })">
+                @user.UserName
+            </a>
+        </li>
+    }
+</ul>

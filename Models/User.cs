@@ -25,6 +25,5 @@ namespace Onboarding.Models
         public ICollection<Reward> GivenRewards { get; set; }
         public ICollection<Reward> ReceivedRewards { get; set; }
         public ICollection<Announcement> Announcements { get; set; }
-		public ICollection<Notification> Notifications { get; set; }
-	}
+    }
 }

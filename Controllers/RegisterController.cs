@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Onboarding.Interfaces;
 using Onboarding.Services;
-using Onboarding.ViewModels;
 
 namespace Onboarding.Controllers
 {
@@ -15,7 +14,7 @@ namespace Onboarding.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(Models.RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
