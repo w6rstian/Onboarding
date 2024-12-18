@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Onboarding.Models.Message>
+
+@{
+    ViewBag.Title = "Chat with " + ViewBag.ReceiverName;
+}
+<h2>Chat with @ViewBag.ReceiverName</h2>
+
+<div>
+    <ul id="messagesList">
+        @foreach (var message in Model)
+        {
+            <li>
+                <strong>@(message.SenderId == int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0") ? "You" : ViewBag.ReceiverName)</strong>: @message.Content
+                (@message.SentAt)
+            </li>
+        }
+    </ul>
+</div>
+
+<div>
+    @using (Html.BeginForm("SendMessage", "Chat", FormMethod.Post))
+    {
+        <input type="hidden" name="receiverId" value="@ViewBag.ReceiverId" />
+        <input type="text" id="messageInput" name="content" placeholder="Enter your message..." required />
+        <button type="submit">Send</button>
+    }
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.15/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatHub?receiverId=@ViewBag.ReceiverId")
+        .build();
+
+        connection.on("ReceiveMessage", function (messageContent, sentAt, senderId) {
+        const li = document.createElement("li");
+        const senderName = senderId == parseInt("@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value") ? "You" : "@ViewBag.ReceiverName";
+        li.innerHTML = `<strong>${senderName}</strong>: ${messageContent} (${sentAt})`;
+        document.getElementById("messagesList").appendChild(li);
+    });
+
+
+    connection.start().catch(err => console.error(err.toString()));
+
+    document.getElementById("messageInput").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const content = this.value;
+            connection.invoke("SendMessage", content, new Date().toLocaleString(), parseInt("@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value"), parseInt("@ViewBag.ReceiverId"))
+    .catch(err => console.error(err.toString()));
+
+            this.value = '';
+        }
+    });
+</script>
