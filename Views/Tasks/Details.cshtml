@@ -36,6 +36,23 @@
         </dd>
     </dl>
 </div>
+
+<h4>Articles</h4>
+<hr />
+@if (Model.Articles.Any())
+{
+    <ul>
+        @foreach (var article in Model.Articles)
+        {
+            <li>@article.Content</li> 
+        }
+    </ul>
+}
+else
+{
+    <p>No articles available for this task.</p> 
+}
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

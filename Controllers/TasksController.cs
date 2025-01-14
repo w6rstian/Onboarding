@@ -23,7 +23,10 @@ namespace Onboarding.Controllers
         // GET: Tasks
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Tasks.Include(t => t.Course).Include(t => t.Mentor);
+            var applicationDbContext = _context.Tasks
+                .Include(t => t.Course)
+                .Include(t => t.Mentor)
+                .Include(t => t.Articles); 
             return View(await applicationDbContext.ToListAsync());
         }   
 
@@ -38,6 +41,7 @@ namespace Onboarding.Controllers
             var task = await _context.Tasks
                 .Include(t => t.Course)
                 .Include(t => t.Mentor)
+                .Include(t => t.Articles)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (task == null)
             {
@@ -58,7 +62,7 @@ namespace Onboarding.Controllers
         // POST: Tasks/Create.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int MentorId, string Title, string Description, int CourseId)
+        public async Task<IActionResult> Create(int MentorId, string Title, string Description, int CourseId, string ArticleContent)
         {
             if (string.IsNullOrEmpty(Title) || string.IsNullOrEmpty(Description) || MentorId == 0 || CourseId == 0)
             {
@@ -98,6 +102,16 @@ namespace Onboarding.Controllers
                 Mentor = mentor,  
                 Course = course   
             };
+
+            if (!string.IsNullOrEmpty(ArticleContent))
+            {
+                var article = new Article
+                {
+                    Content = ArticleContent,
+                    Task = task
+                };
+                task.Articles.Add(article);
+            }
 
             course.Tasks.Add(task);
             _context.Add(task);
