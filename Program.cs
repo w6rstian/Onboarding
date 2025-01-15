@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Onboarding.Models;
 using Microsoft.AspNetCore.SignalR;
 using Onboarding.Hubs;
+using Onboarding.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,5 +45,12 @@ app.UseEndpoints(endpoints =>
 		pattern: "{controller=Home}/{action=Index}/{id?}");
 	endpoints.MapRazorPages();
 });
+
+//role
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await RoleInitializer.SeedRolesAndAdminAsync(services);
+}
 
 app.Run();
