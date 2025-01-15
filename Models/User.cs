@@ -17,6 +17,8 @@ namespace Onboarding.Models
         //public string Password { get; set; }
         public int? BuddyId { get; set; }
         //public string Email { get; set; }
+        public string? Department { get; set; } //departament
+        public string? Position { get; set; } // stanowisko
 
         public User Buddy { get; set; }
         public ICollection<UserCourse> UserCourses { get; set; }
