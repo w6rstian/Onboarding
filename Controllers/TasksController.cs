@@ -62,7 +62,7 @@ namespace Onboarding.Controllers
         // POST: Tasks/Create.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int MentorId, string Title, string Description, int CourseId, string ArticleContent)
+        public async Task<IActionResult> Create(int MentorId, string Title, string Description, int CourseId, string ArticleContent, string Links)
         {
             if (string.IsNullOrEmpty(Title) || string.IsNullOrEmpty(Description) || MentorId == 0 || CourseId == 0)
             {
@@ -102,6 +102,25 @@ namespace Onboarding.Controllers
                 Mentor = mentor,  
                 Course = course   
             };
+
+            if (!string.IsNullOrEmpty(Links))
+            {
+                string[] links = Links.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var urlLink in links)
+                {
+                    var link = new Link
+                    {
+                        LinkUrl = urlLink,
+                        Name = urlLink,
+                        TaskId = task.Id,
+                        Task = task
+                    };
+
+                    task.Links.Add(link);
+                }
+            }
+
 
             if (!string.IsNullOrEmpty(ArticleContent))
             {
