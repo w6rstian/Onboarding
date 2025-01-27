@@ -54,8 +54,8 @@ namespace Onboarding.Controllers
         // GET: Tasks/Create
         public IActionResult Create()
         {
-            //ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
-            //ViewData["MentorId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
+            ViewData["MentorId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
