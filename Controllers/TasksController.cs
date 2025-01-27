@@ -26,7 +26,8 @@ namespace Onboarding.Controllers
             var applicationDbContext = _context.Tasks
                 .Include(t => t.Course)
                 .Include(t => t.Mentor)
-                .Include(t => t.Articles); 
+                .Include(t => t.Articles)
+                .Include(t => t.Links);
             return View(await applicationDbContext.ToListAsync());
         }   
 
@@ -42,6 +43,7 @@ namespace Onboarding.Controllers
                 .Include(t => t.Course)
                 .Include(t => t.Mentor)
                 .Include(t => t.Articles)
+                .Include(t => t.Links)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (task == null)
             {
@@ -71,7 +73,6 @@ namespace Onboarding.Controllers
 
             if (!ModelState.IsValid)    
             {
-                // Jeśli formularz nie jest poprawny, ponownie wyświetl formularz
                 ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
                 ViewData["MentorId"] = new SelectList(_context.Users, "Id", "Id");
                 return View();
@@ -147,22 +148,36 @@ namespace Onboarding.Controllers
                 return NotFound();
             }
 
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _context.Tasks
+                .Include(t => t.Articles)
+                .Include(t => t.Links)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             if (task == null)
             {
                 return NotFound();
             }
+
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", task.CourseId);
             ViewData["MentorId"] = new SelectList(_context.Users, "Id", "Id", task.MentorId);
+
+            ViewBag.ArticleContent = task.Articles.FirstOrDefault()?.Content;
+            ViewBag.Links = string.Join(" ", task.Links.Select(l => l.LinkUrl));
+
             return View(task);
         }
 
         // POST: Tasks/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MentorId,Title,Description,CourseId")] Task task)
+        public async Task<IActionResult> Edit(int id, int MentorId, string Title, string Description, int CourseId, string ArticleContent, string Links)
         {
-            if (id != task.Id)
+            var existingTask = await _context.Tasks
+                .Include(t => t.Articles)
+                .Include(t => t.Links)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (existingTask == null)
             {
                 return NotFound();
             }
@@ -171,12 +186,63 @@ namespace Onboarding.Controllers
             {
                 try
                 {
-                    _context.Update(task);
+                    existingTask.MentorId = MentorId;
+                    existingTask.Title = Title;
+                    existingTask.Description = Description;
+                    existingTask.CourseId = CourseId;
+
+                    var existingArticle = existingTask.Articles.FirstOrDefault();
+                    if (!string.IsNullOrEmpty(ArticleContent))
+                    {
+                        if (existingArticle != null)
+                        {
+                            existingArticle.Content = ArticleContent;
+                        }
+                        else
+                        {
+                            existingTask.Articles.Add(new Article { Content = ArticleContent });
+                        }
+                    }
+                    else if (existingArticle != null)
+                    {
+                        _context.Articles.Remove(existingArticle);
+                    }
+
+                    if (!string.IsNullOrEmpty(Links))
+                    {
+                        var links = Links.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        var existingLinks = existingTask.Links.ToList();
+
+                        foreach (var existingLink in existingLinks)
+                        {
+                            if (!links.Contains(existingLink.LinkUrl))
+                            {
+                                _context.Links.Remove(existingLink);
+                            }
+                        }
+
+                        foreach (var linkUrl in links)
+                        {
+                            if (!existingLinks.Any(l => l.LinkUrl == linkUrl))
+                            {
+                                existingTask.Links.Add(new Link { LinkUrl = linkUrl, Name = linkUrl });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var existingLink in existingTask.Links.ToList())
+                        {
+                            _context.Links.Remove(existingLink);
+                        }
+                    }
+
+                    _context.Update(existingTask);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TaskExists(task.Id))
+                    if (!TaskExists(id))
                     {
                         return NotFound();
                     }
@@ -187,10 +253,15 @@ namespace Onboarding.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", task.CourseId);
-            ViewData["MentorId"] = new SelectList(_context.Users, "Id", "Id", task.MentorId);
-            return View(task);
+
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", CourseId);
+            ViewData["MentorId"] = new SelectList(_context.Users, "Id", "Id", MentorId);
+            ViewBag.ArticleContent = ArticleContent;
+            ViewBag.Links = Links;
+
+            return View(existingTask);
         }
+
 
         // GET: Tasks/Delete/5
         public async Task<IActionResult> Delete(int? id)
