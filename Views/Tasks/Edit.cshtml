@@ -34,6 +34,16 @@
                 <span asp-validation-for="CourseId" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label>Article Content</label>
+                <input type="text" name="ArticleContent" class="form-control" value="@ViewBag.ArticleContent" />
+                <span class="text-muted">Optional: Add a related article for this task.</span>
+            </div>
+            <div class="form-group">
+                <label>Links</label>
+                <input type="text" name="Links" class="form-control" value="@ViewBag.Links" />
+                <span class="text-muted">Optional: Add links to this task, separated by blank space.</span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
@@ -45,5 +55,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

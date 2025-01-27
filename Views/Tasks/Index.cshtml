@@ -25,6 +25,7 @@
                 @Html.DisplayNameFor(model => model.Mentor)
             </th>
             <th>Articles</th>
+            <th>Links</th>
             <th></th>
         </tr>
     </thead>
@@ -38,10 +39,10 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Course.Id)
+                    @Html.DisplayFor(modelItem => item.Course.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Mentor.Id)
+                    @Html.DisplayFor(modelItem => item.Mentor.Name) @Html.DisplayFor(modelItem => item.Mentor.Surname)
                 </td>
                 <td>
                     @if (item.Articles.Any())
