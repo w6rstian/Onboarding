@@ -19,6 +19,10 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
+builder.Services.AddAuthorization(options =>
+{
+   
+});
 
 var app = builder.Build();
 
