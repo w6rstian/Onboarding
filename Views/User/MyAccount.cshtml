@@ -1,0 +1,59 @@
+﻿@model User;
+@{
+    ViewData["Title"] = "Tworzenie Konta Pracownika";
+}
+<head>
+    <link rel="stylesheet" href="~/css/colors.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body style="background-color: var(--bg-color);">
+
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Tworzenie konta nowego pracownika</h2>
+        <form asp-action="MyAccount" asp-controller="User" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">Imię</label>
+                <input asp-for="Name" type="text" class="form-control" id="name" name="name" placeholder="Wprowadź imię">
+            </div>
+            <div class="mb-3">
+                <label for="lastname" class="form-label">Nazwisko</label>
+                <input asp-for="Surname" type="text" class="form-control" id="lastname" name="lastname" placeholder="Wprowadź nazwisko">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Numer telefonu</label>
+                <input asp-for="PhoneNumber" type="text" class="form-control" id="phone" name="phone" placeholder="Wprowadź numer telefonu">
+            </div>
+            <div class="mb-3">
+                <label for="dept" class="form-label">Dział</label>
+                <input asp-for="Department" type="text" class="form-control" id="dept" name="dept" placeholder="Wprowadź nazwę działu">
+            </div>
+            <div class="mb-3">
+                <label for="pos" class="form-label">Stanowisko</label>
+                <input asp-for="Position" type="text" class="form-control" id="pos" name="pos" placeholder="Wprowadź nazwę stanowiska">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Edytuj dane</button>
+        </form>
+    </div>
+</body>
+<script>
+    // Sprawdzanie, czy jest jakaś wiadomość do wyświetlenia
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <text>
+            console.log('Udalo sie zrobic update!!!!');
+        </text>
+    }
+	else if (TempData["ErrorMessage"] != null)
+	{
+		<text>
+				console.log('Nie udalo sie zrobic update!!!!');
+		</text>
+	}
+    else
+    {
+        <text>
+                    console.log('cos kompletenie jest nie tak');
+        </text>
+    }
+</script>

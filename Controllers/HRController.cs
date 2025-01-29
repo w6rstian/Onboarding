@@ -17,7 +17,7 @@ namespace Onboarding.Controllers
 		private readonly IUserEmailStore<User> _emailStore;
 		private readonly IEmailSender _emailSender;
 
-		public HRController(UserManager<User> userManager, IUserStore<User> userStore, IEmailSender emailSender)
+		public HRController(UserManager<User> userManager, IEmailSender emailSender, IUserStore<User> userStore, IUserEmailStore<User> emailStore)
 		{
 			_userManager = userManager;
 			_userStore = userStore;
