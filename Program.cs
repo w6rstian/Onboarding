@@ -55,6 +55,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await RoleInitializer.SeedRolesAndAdminAsync(services);
+	await CourseTaskInitializer.SeedCoursesAndTasksAsync(services);
 }
 
 app.Run();
