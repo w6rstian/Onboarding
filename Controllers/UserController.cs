@@ -37,7 +37,7 @@ namespace Onboarding.Controllers
 		}
 		[Authorize]
 		[HttpPost]
-		public async Task<IActionResult> MyAccount(string name, string lastname,string phone,string dept,string pos)
+		public async Task<IActionResult> MyAccount(string name, string lastname,string email,string phone,string dept,string pos)
 		{
 			var user = await _userManager.GetUserAsync(User);
 			if (user == null)

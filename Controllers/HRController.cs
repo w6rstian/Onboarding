@@ -14,14 +14,12 @@ namespace Onboarding.Controllers
 	{
 		private readonly UserManager<User> _userManager;
 		private readonly IUserStore<User> _userStore;
-		private readonly IUserEmailStore<User> _emailStore;
 		private readonly IEmailSender _emailSender;
 
-		public HRController(UserManager<User> userManager, IEmailSender emailSender, IUserStore<User> userStore, IUserEmailStore<User> emailStore)
+		public HRController(UserManager<User> userManager, IEmailSender emailSender, IUserStore<User> userStore)
 		{
 			_userManager = userManager;
 			_userStore = userStore;
-			_emailStore = GetEmailStore();
 			_emailSender = emailSender;
 		}
 
@@ -43,14 +41,16 @@ namespace Onboarding.Controllers
 
 			user.Name = name;
 			user.Surname = lastname;
-			user.EmailConfirmed = true;
+			
 
 			await _userStore.SetUserNameAsync(user, email, CancellationToken.None);
-			await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
 			var result = await _userManager.CreateAsync(user, "DefaultPassword123!");
 
 			if (result.Succeeded)
 			{
+				await _userManager.SetEmailAsync(user, email);
+				user.EmailConfirmed = true;
+
 				var userId = await _userManager.GetUserIdAsync(user);
 				var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 				code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
