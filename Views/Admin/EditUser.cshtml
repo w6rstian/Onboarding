@@ -1,0 +1,25 @@
+﻿@model Onboarding.Models.User
+
+@{
+    ViewData["Title"] = "Edytuj użytkownika";
+}
+
+<h2>Edytuj użytkownika</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Imię</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Nazwisko</label>
+        <input asp-for="Surname" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a asp-action="ManageUsers" class="btn btn-secondary">Anuluj</a>
+</form>
