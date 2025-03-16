@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Onboarding.Models.Course>
+
+@{
+    ViewData["Title"] = "Moje kursy";
+}
+
+<h2>Moje kursy</h2>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nazwa kursu</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var course in Model)
+            {
+                <tr>
+                    <td>@course.Id</td>
+                    <td>@course.Name</td>
+                    <td>
+                        <a href="@Url.Action("Details", "UserCoursesList", new { id = course.Id })" class="btn btn-info">Szczegóły</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Nie jesteś przypisany do żadnego kursu.</p>
+}
