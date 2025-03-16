@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Onboarding.Controllers
 {
-    [Authorize] // Upewnia się, że tylko zalogowani użytkownicy mają dostęp
+    [Authorize]
     public class UserCoursesListController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,10 +21,8 @@ namespace Onboarding.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // Pobieranie ID zalogowanego użytkownika
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // Pobieranie kursów przypisanych do użytkownika
             var userCourses = await _context.UserCourses
                 .Where(uc => uc.UserId == userId)
                 .Include(uc => uc.Course)
@@ -32,6 +30,26 @@ namespace Onboarding.Controllers
                 .ToListAsync();
 
             return View(userCourses);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var course = await _context.Courses
+                .Include(c => c.UserCourses)
+                    .ThenInclude(uc => uc.User)
+                .Include(c => c.Tasks)
+                    .ThenInclude(t => t.Links) 
+                .Include(c => c.Tasks)
+                    .ThenInclude(t => t.Mentor) 
+                .Include(c => c.Tests) 
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            return View(course);
         }
     }
 }
