@@ -12,8 +12,9 @@ namespace Onboarding.Models
         public string Name { get; set; }
         public int? TaskId { get; set; }
 
-        //public Task Task { get; set; }
-        public Course Course { get; set; } //nowe
-        public ICollection<Question> Questions { get; set; }
+        public Task Task { get; set; }
+        public Course Course { get; set; }
+
+        public ICollection<Question> Questions { get; set; } = new List<Question>();
     }
 }

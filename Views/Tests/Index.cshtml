@@ -4,32 +4,38 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1 class="text-center my-4">Testy</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
+<p class="text-center">
+    <a asp-action="Create" class="btn btn-success btn-lg">Create New</a>
 </p>
-<table>
-    <thead>
-        <tr>
-            <th>Nazwa Testu</th>
-            <th>Kurs</th>
-            <th>Opcje</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Course?.Name</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edytuj</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Szczegóły</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Usuń</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
+<div class="table-responsive">
+    <table class="table" style="background-color: var(--primary-color); color: white;">
+        <thead style="background-color: var(--primary-color);">
+            <!-- Set the primary color here -->
+            <tr>
+                <th>Nazwa Testu</th>
+                <th>Kurs</th>
+                <th>Opcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Course?.Name</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <!-- Group the buttons -->
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edytuj</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Szczegóły</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Usuń</a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
