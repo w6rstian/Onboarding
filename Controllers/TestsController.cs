@@ -22,8 +22,13 @@ namespace Onboarding.Controllers
         // GET: Tests
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tests.ToListAsync());
+            var tests = await _context.Tests
+                                         .Include(t => t.Course) // Include Course so it is loaded with the Test
+                                         .ToListAsync();
+            return View(tests);
+
         }
+
 
         // GET: Tests/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -34,11 +39,15 @@ namespace Onboarding.Controllers
             }
 
             var test = await _context.Tests
+                .Include(t => t.Course)
+        .Include(t => t.Task)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (test == null)
             {
                 return NotFound();
             }
+            ViewBag.Tasks = test.Task != null ? new List<string> { test.Task.Title } : null;
+
 
             return View(test);
         }
@@ -107,17 +116,23 @@ namespace Onboarding.Controllers
                 return NotFound();
             }
 
-            var test = await _context.Tests.FindAsync(id);
+            var test = await _context.Tests
+                .Include(t => t.Course) // Load the associated Course
+                .Include(t => t.Task)   // Load the associated Task
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             if (test == null)
             {
                 return NotFound();
             }
+
+            // Populate ViewBag with data for dropdowns
+            ViewBag.Tasks = new SelectList(_context.Tasks, "Id", "Title", test.TaskId);
+
             return View(test);
         }
 
         // POST: Tests/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,TaskId")] Test test)
@@ -131,7 +146,20 @@ namespace Onboarding.Controllers
             {
                 try
                 {
-                    _context.Update(test);
+                    // We do not change the Course, only update the TaskId and Name.
+                    var existingTest = await _context.Tests
+                        .Include(t => t.Course) // Make sure to load the course, but do not change it
+                        .FirstOrDefaultAsync(t => t.Id == test.Id);
+
+                    if (existingTest == null)
+                    {
+                        return NotFound();
+                    }
+
+                    existingTest.Name = test.Name; // Update the Name
+                    existingTest.TaskId = test.TaskId; // Update the TaskId
+
+                    _context.Update(existingTest);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -150,6 +178,8 @@ namespace Onboarding.Controllers
             return View(test);
         }
 
+
+
         // GET: Tests/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -159,14 +189,20 @@ namespace Onboarding.Controllers
             }
 
             var test = await _context.Tests
+                .Include(t => t.Task)
+                 .Include(t => t.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (test == null)
             {
                 return NotFound();
             }
 
+            ViewBag.Tasks = test.Task; 
             return View(test);
         }
+
+
 
         // POST: Tests/Delete/5
         [HttpPost, ActionName("Delete")]
