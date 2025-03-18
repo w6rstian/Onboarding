@@ -122,11 +122,26 @@ namespace Onboarding.Controllers
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
             if (user == null) return NotFound();
 
-            return View(user);
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var isNowy = userRoles.Contains("Nowy");
+
+            var buddies = await _userManager.GetUsersInRoleAsync("Buddy");
+
+            var model = new EditUserViewModel
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                BuddyId = user.BuddyId,
+                AvailableBuddies = isNowy ? buddies.ToList() : new List<User>() // Pokazujemy Buddich tylko dla roli "Nowy"
+            };
+
+            return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUser(User model)
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id);
             if (user == null) return NotFound();
@@ -134,6 +149,7 @@ namespace Onboarding.Controllers
             user.Name = model.Name;
             user.Surname = model.Surname;
             user.Email = model.Email;
+            user.BuddyId = model.BuddyId;
 
             var result = await _userManager.UpdateAsync(user);
             if (result.Succeeded)
