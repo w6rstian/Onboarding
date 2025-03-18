@@ -1,0 +1,33 @@
+﻿@model UserTask
+@using Newtonsoft.Json
+<h3>@Model.Task.Title</h3>
+
+@{
+    var steps = new List<UserTaskStep>();
+    if (!string.IsNullOrEmpty(Model.UserTaskStepsJson))
+    {
+        steps = JsonConvert.DeserializeObject<List<UserTaskStep>>(Model.UserTaskStepsJson);
+    }
+}
+<ul>
+    @foreach (var step in steps)
+    {
+        <li>
+            <span>@step.StepNumber. @step.Description</span>
+            @if (step.IsCompleted)
+            {
+                <span class="badge badge-success">✓ Wykonano</span>
+            }
+            else
+            {
+                <form method="post" asp-controller="Tasks" asp-action="CompleteStep" asp-route-taskId="@Model.TaskId">
+                    <input type="hidden" name="stepNumber" value="@step.StepNumber" />
+                    <button type="submit" class="btn btn-primary" >Zaznacz jako wykonany</button>
+                </form>
+
+            }
+
+            <button type="submit" class="btn btn-primary">Wyślij do oceny</button>
+        </li>
+    }
+</ul>

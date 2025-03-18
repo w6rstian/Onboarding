@@ -24,9 +24,9 @@ namespace Onboarding.Data
         public DbSet<UserCourse> UserCourses { get; set; }
         public DbSet<CourseTask> CourseTasks { get; set; }
 
+		public DbSet<UserTask> UserTasks { get; set; }
 
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 

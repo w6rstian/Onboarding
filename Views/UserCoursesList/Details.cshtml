@@ -40,6 +40,7 @@
                 <th>Tytuł</th>
                 <th>Opis</th>
                 <th>Mentor</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -50,6 +51,12 @@
                     <td>@task.Title</td>
                     <td>@task.Description</td>
                     <td>@(task.Mentor != null ? task.Mentor.Name + " " + task.Mentor.Surname : "Brak")</td>
+                    <td>
+                        <a asp-controller="Tasks" asp-action="Execute" asp-route-taskId="@task.Id" class="btn btn-primary">
+                            Wykonaj
+                        </a>
+                    </td>
+                    
                 </tr>
             }
         </tbody>

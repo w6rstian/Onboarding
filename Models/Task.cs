@@ -21,6 +21,8 @@ namespace Onboarding.Models
         public ICollection<Link> Links { get; set; } = new List<Link>();
         public User Mentor { get; set; }
 
-        public ICollection<CourseTask> CourseTasks { get; set; } = new List<CourseTask>(); 
-    }
+        public ICollection<CourseTask> CourseTasks { get; set; } = new List<CourseTask>();
+
+		public string StepsJson { get; set; }
+	}
 }

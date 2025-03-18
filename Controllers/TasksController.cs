@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Onboarding.Data;
 using Onboarding.Models;
 using Task = Onboarding.Models.Task;
-
+using System.Text.Json;
+using StatusTask = Onboarding.Models.StatusTask;
+using Newtonsoft.Json;
 namespace Onboarding.Controllers
 {
     public class TasksController : Controller
@@ -302,5 +307,99 @@ namespace Onboarding.Controllers
         {
             return _context.Tasks.Any(e => e.Id == id);
         }
-    }
+
+		[Authorize]
+		public async Task<IActionResult> Execute(int taskId)
+		{
+			var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+			
+			int userId = int.Parse(userIdString);
+
+			var userTask = _context.UserTasks
+	.Include(ut => ut.Task) // dodaj Include, aby załadować relację!
+	.FirstOrDefault(ut => ut.TaskId == taskId && ut.UserId == userId);
+
+
+			if (userTask == null)
+			{
+				var task = await _context.Tasks.FindAsync(taskId);
+
+				if (task == null)
+				{
+					// Zadanie nie istnieje, zwróć NotFound lub odpowiedni komunikat
+					return NotFound($"Zadanie o ID {taskId} {userIdString} nie zostało znalezione.");
+				}
+
+                userTask = new UserTask
+                {
+                    TaskId = task.Id,
+                    UserId = userId,
+                    Status = StatusTask.InProgress,
+
+                    UserTaskStepsJson = task.StepsJson
+                };
+
+				_context.UserTasks.Add(userTask);
+				await _context.SaveChangesAsync();
+			}
+			if (userTask == null)
+			{
+				return NotFound("UserTask nie znaleziony.");
+			}
+
+			if (userTask.Task == null)
+			{
+				return NotFound($"Nie znaleziono powiązanego zadania Task dla UserTask ID: {userTask.UserTaskId}");
+			}
+			return View("Execute", userTask);
+		}
+
+		
+		[Authorize]
+		[HttpPost("{taskId?}")]
+		public async Task<IActionResult> CompleteStep([FromRoute] int? taskId, [FromQuery] int? taskIdQuery, [FromForm] int stepNumber)
+		{
+			int id = taskId ?? taskIdQuery ?? 0;
+
+			if (id == 0)
+			{
+				return BadRequest("Brak poprawnego taskId.");
+			}
+
+			var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if (!int.TryParse(userIdString, out var userId))
+			{
+				return Unauthorized("Nie udało się odczytać ID użytkownika.");
+			}
+
+			var userTask = _context.UserTasks
+				.FirstOrDefault(ut => ut.TaskId == id && ut.UserId == userId);
+
+			if (userTask == null)
+			{
+				return NotFound($"Zadanie o ID {id} nie znaleziono.");
+			}
+
+			var steps = JsonConvert.DeserializeObject<List<UserTaskStep>>(userTask.UserTaskStepsJson);
+			var stepToUpdate = steps.FirstOrDefault(s => s.StepNumber == stepNumber);
+
+			if (stepToUpdate != null)
+			{
+				stepToUpdate.IsCompleted = true;
+				userTask.UserTaskStepsJson = JsonConvert.SerializeObject(steps);
+
+				if (steps.All(s => s.IsCompleted))
+				{
+					userTask.Status = StatusTask.Completed;
+				}
+
+				await _context.SaveChangesAsync();
+			}
+
+			return RedirectToAction("Execute", new { taskId = id });
+		}
+
+
+	}
 }
