@@ -1,4 +1,4 @@
-﻿@model Onboarding.Models.User
+﻿@model Onboarding.ViewModels.EditUserViewModel
 @{
     ViewData["Title"] = "Edytuj użytkownika";
 }
@@ -56,6 +56,22 @@
                                 </div>
                             </div>
                         </div>
+
+                        @if (Model.AvailableBuddies.Any())
+                        {
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-people me-1 text-primary"></i>Wybierz Buddiego
+                                </label>
+                                <select asp-for="BuddyId" class="form-select">
+                                    <option value="">Brak</option>
+                                    @foreach (var buddy in Model.AvailableBuddies)
+                                    {
+                                        <option value="@buddy.Id">@buddy.Name @buddy.Surname</option>
+                                    }
+                                </select>
+                            </div>
+                        }
 
                         <hr class="my-4">
 
