@@ -4,33 +4,127 @@
     ViewData["Title"] = "Moje kursy";
 }
 
-<h2>Moje kursy</h2>
+<style>
+    .courses-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
 
-@if (Model.Any())
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nazwa kursu</th>
-                <th>Akcje</th>
-            </tr>
-        </thead>
-        <tbody>
+    .courses-header {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .course-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .course-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+    .course-info {
+        display: flex;
+        align-items: center;
+    }
+
+    .course-icon {
+        width: 50px;
+        height: 50px;
+        background-color: #3498db;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .course-details {
+        flex-grow: 1;
+    }
+
+    .course-id {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-bottom: 5px;
+    }
+
+    .course-name {
+        color: #2c3e50;
+        font-size: 1.2em;
+        font-weight: 500;
+    }
+
+    .btn-custom {
+        padding: 8px 20px;
+        border-radius: 20px;
+        transition: transform 0.2s;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+    .no-courses {
+        text-align: center;
+        color: #7f8c8d;
+        font-size: 1.1em;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    }
+</style>
+
+<div class="courses-container">
+    <h2 class="courses-header">Moje kursy</h2>
+
+    @if (Model.Any())
+    {
+        <div class="courses-list">
             @foreach (var course in Model)
             {
-                <tr>
-                    <td>@course.Id</td>
-                    <td>@course.Name</td>
-                    <td>
-                        <a href="@Url.Action("Details", "UserCoursesList", new { id = course.Id })" class="btn btn-info">Szczegóły</a>
-                    </td>
-                </tr>
+                <div class="course-card">
+                    <div class="course-info">
+                        <div class="course-icon">
+                            <i class="bi bi-book"></i> <!-- Ikona książki -->
+                        </div>
+                        <div class="course-details">
+                            <div class="course-id">ID: @course.Id</div>
+                            <div class="course-name">@course.Name</div>
+                        </div>
+                    </div>
+                    <div class="course-actions">
+                        <a href="@Url.Action("Details", "UserCoursesList", new { id = course.Id })" class="btn btn-info btn-custom">
+                            <i class="bi bi-eye"></i> Szczegóły
+                        </a>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Nie jesteś przypisany do żadnego kursu.</p>
-}
+        </div>
+    }
+    else
+    {
+        <div class="no-courses">
+            <i class="bi bi-emoji-frown" style="font-size: 2em;"></i>
+            <p>Nie jesteś przypisany do żadnego kursu.</p>
+        </div>
+    }
+</div>
