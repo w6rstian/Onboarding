@@ -34,10 +34,10 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Mentor.Name) @Html.DisplayFor(model => model.Mentor.Surname)
 
-            // This leads to chat with mentor specified in task.
+            @* // This leads to chat with mentor specified in task. *@
             <a href="@Url.Action("Index", "Chat", new { receiverId = Model.MentorId })">
 
-                // This span can be changed to a button or whatever front is needed.
+                @* // This span can be changed to a button or whatever front is needed. *@
                 <span class="requestHelpButton">Request help from Mentor</span>
             </a>
         </dd>
