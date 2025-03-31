@@ -40,7 +40,8 @@ namespace Onboarding.Services
                 Title = "Setup Development Environment",
                 Description = "Install and configure your development environment.",
                 MentorId = mentor1.Id,
-                Mentor = mentor1
+                Mentor = mentor1,
+                StepsJson = "[\r\n  {\r\n    \"StepNumber\": 1,\r\n    \"Description\": \"Zapoznaj się z instrukcją wprowadzającą\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 2,\r\n    \"Description\": \"Wykonaj pierwszą część zadania\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 3,\r\n    \"Description\": \"Zweryfikuj wykonane czynności\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 4,\r\n    \"Description\": \"Prześlij zadanie do akceptacji\",\r\n    \"IsCompleted\": false\r\n  }\r\n]"
             };
 
             var article1 = new Article
@@ -67,7 +68,8 @@ namespace Onboarding.Services
                 Title = "Write Your First Program",
                 Description = "Create a simple 'Hello, World!' program.",
                 MentorId = mentor1.Id,
-                Mentor = mentor1
+                Mentor = mentor1,
+                StepsJson = "[\r\n  {\r\n    \"StepNumber\": 1,\r\n    \"Description\": \"Zapoznaj się z instrukcją wprowadzającą\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 2,\r\n    \"Description\": \"Wykonaj pierwszą część zadania\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 3,\r\n    \"Description\": \"Zweryfikuj wykonane czynności\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 4,\r\n    \"Description\": \"Prześlij zadanie do akceptacji\",\r\n    \"IsCompleted\": false\r\n  }\r\n]"
             };
 
             var article2 = new Article
@@ -102,7 +104,8 @@ namespace Onboarding.Services
                 Title = "Understanding LINQ",
                 Description = "Learn and practice LINQ queries.",
                 MentorId = mentor2.Id,
-                Mentor = mentor2
+                Mentor = mentor2,
+                StepsJson = "[\r\n  {\r\n    \"StepNumber\": 1,\r\n    \"Description\": \"Zapoznaj się z instrukcją wprowadzającą\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 2,\r\n    \"Description\": \"Wykonaj pierwszą część zadania\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 3,\r\n    \"Description\": \"Zweryfikuj wykonane czynności\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 4,\r\n    \"Description\": \"Prześlij zadanie do akceptacji\",\r\n    \"IsCompleted\": false\r\n  }\r\n]"
             };
 
             var article3 = new Article
@@ -131,7 +134,8 @@ namespace Onboarding.Services
                 Title = "Asynchronous Programming",
                 Description = "Explore async/await in C#.",
                 MentorId = mentor2.Id,
-                Mentor = mentor2
+                Mentor = mentor2,
+                StepsJson = "[\r\n  {\r\n    \"StepNumber\": 1,\r\n    \"Description\": \"Zapoznaj się z instrukcją wprowadzającą\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 2,\r\n    \"Description\": \"Wykonaj pierwszą część zadania\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 3,\r\n    \"Description\": \"Zweryfikuj wykonane czynności\",\r\n    \"IsCompleted\": false\r\n  },\r\n  {\r\n    \"StepNumber\": 4,\r\n    \"Description\": \"Prześlij zadanie do akceptacji\",\r\n    \"IsCompleted\": false\r\n  }\r\n]"
             };
 
             var article4 = new Article

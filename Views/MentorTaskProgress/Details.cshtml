@@ -1,0 +1,31 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Szczegóły taska";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Postęp uczestników - @ViewBag.TaskTitle</h2>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Imię i nazwisko</th>
+                <th scope="col">Status</th>
+                <th scope="col">Ukończone kroki</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.User.Name @item.User.Surname</td>
+                    <td>@item.Status</td>
+                    <td>@item.CompletedSteps / @item.TotalSteps</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" class="btn btn-secondary mt-3">← Powrót do listy tasków</a>
+</div>
