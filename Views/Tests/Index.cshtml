@@ -13,10 +13,10 @@
 <div class="table-responsive">
     <table class="table" style="background-color: var(--primary-color); color: white;">
         <thead style="background-color: var(--primary-color);">
-            <!-- Set the primary color here -->
             <tr>
                 <th>Nazwa Testu</th>
                 <th>Kurs</th>
+                <th>Pytania</th>
                 <th>Opcje</th>
             </tr>
         </thead>
@@ -27,8 +27,22 @@
                     <td>@item.Name</td>
                     <td>@item.Course?.Name</td>
                     <td>
+                        @if (item.Questions != null && item.Questions.Any())
+                        {
+                            <ul>
+                                @foreach (var question in item.Questions)
+                                {
+                                    <li>@question.Description</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>Brak pytań</span>
+                        }
+                    </td>
+                    <td>
                         <div class="btn-group" role="group">
-                            <!-- Group the buttons -->
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edytuj</a>
                             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Szczegóły</a>
                             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Usuń</a>

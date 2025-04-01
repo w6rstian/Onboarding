@@ -23,10 +23,68 @@ namespace Onboarding.Controllers
         public async Task<IActionResult> Index()
         {
             var tests = await _context.Tests
-                                         .Include(t => t.Course) // Include Course so it is loaded with the Test
-                                         .ToListAsync();
-            return View(tests);
+                                        .Include(t => t.Course)
+                                        .Include(t => t.Questions)
+                                        .ToListAsync();
 
+            Console.WriteLine($"Liczba testów w bazie: {tests.Count}");
+
+            foreach (var test in tests)
+            {
+                Console.WriteLine($"Test: {test.Id} - {test.Name}");
+            }
+
+            return View(tests);
+        }
+
+
+        // GET: Tests/Create
+        public IActionResult Create()
+        {
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Name");
+            return View(new Test()); return View();
+        }
+
+        // POST: Tests/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([FromForm] Test test, [FromForm] List<Question> Questions)
+        {
+            Console.WriteLine("Rozpoczęto dodawanie testu.");
+            Console.WriteLine($"CourseId: {test.CourseId}, Name: {test.Name}");
+
+            var course = await _context.Courses.FindAsync(test.CourseId);
+            if (course == null)
+            {
+                Console.WriteLine("Nie znaleziono kursu.");
+                return NotFound();
+            }
+
+            test.Course = course;
+
+            if (Questions != null && Questions.Count > 0)
+            {
+                test.Questions = new List<Question>();
+                foreach (var question in Questions)
+                {
+                    Console.WriteLine($"Pytanie: {question.Description}");
+                    test.Questions.Add(new Question
+                    {
+                        Description = question.Description,
+                        AnswerA = question.AnswerA,
+                        AnswerB = question.AnswerB,
+                        AnswerC = question.AnswerC,
+                        AnswerD = question.AnswerD,
+                        CorrectAnswer = question.CorrectAnswer
+                    });
+                }
+            }
+
+             _context.Tests.Add(test);
+            await _context.SaveChangesAsync();
+
+            Console.WriteLine($"Test dodany do bazy: {test.Name}, ID: {test.Id}");
+            return RedirectToAction(nameof(Index));
         }
 
 
@@ -39,73 +97,16 @@ namespace Onboarding.Controllers
             }
 
             var test = await _context.Tests
-                .Include(t => t.Course)
-        .Include(t => t.Task)
+                .Include(t => t.Course)       // Ładujemy powiązany kurs
+                .Include(t => t.Questions)    // Ładujemy pytania
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (test == null)
             {
                 return NotFound();
             }
-            ViewBag.Tasks = test.Task != null ? new List<string> { test.Task.Title } : null;
-
 
             return View(test);
-        }
-
-        // GET: Tests/Create
-        public IActionResult Create()
-        {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Name");
-            ViewData["TaskId"] = new SelectList(_context.Tasks, "Id", "Title");
-            return View();
-        }
-
-        // POST: Tests/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(string Name,int TaskId,int CourseId)
-        {
-            if (string.IsNullOrEmpty(Name) || CourseId == 0)
-            {
-                ModelState.AddModelError(string.Empty, "Name and CourseId are required.");
-            }
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(c => c.Id == CourseId);
-
-            if (course == null)
-            {
-                return NotFound();
-            }
-            var test = new Test
-            {
-                Name = Name,
-                TaskId = TaskId,
-                Course = course,
-                Questions = new List<Question>()
-            };
-            Console.WriteLine("Test: "+ test);
-            if (ModelState.IsValid)
-            {
-                
-                _context.Add(test);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            if (!ModelState.IsValid)
-            {
-                foreach (var state in ModelState)
-                {
-                    foreach (var error in state.Value.Errors)
-                    {
-                        Console.WriteLine($"Field: {state.Key}, Error: {error.ErrorMessage}");
-                    }
-                }
-            }
-            ViewBag.CourseId = new SelectList(_context.Courses, "Id", "Name", test.Course?.Id);
-            return View(test);
-            //return RedirectToAction(nameof(Index));
         }
 
         // GET: Tests/Edit/5
@@ -117,25 +118,24 @@ namespace Onboarding.Controllers
             }
 
             var test = await _context.Tests
-                .Include(t => t.Course) // Load the associated Course
-                .Include(t => t.Task)   // Load the associated Task
-                .FirstOrDefaultAsync(t => t.Id == id);
+                .Include(t => t.Course)       // Ładujemy powiązany kurs
+                .Include(t => t.Questions)    // Ładujemy pytania
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (test == null)
             {
                 return NotFound();
             }
 
-            // Populate ViewBag with data for dropdowns
-            ViewBag.Tasks = new SelectList(_context.Tasks, "Id", "Title", test.TaskId);
-
+            // Przekazujemy test do widoku
+            ViewBag.CourseId = new SelectList(_context.Courses, "Id", "Name", test.CourseId);
             return View(test);
         }
 
         // POST: Tests/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,TaskId")] Test test)
+        public async Task<IActionResult> Edit(int id, Test test, List<Question> Questions)
         {
             if (id != test.Id)
             {
@@ -146,25 +146,43 @@ namespace Onboarding.Controllers
             {
                 try
                 {
-                    // We do not change the Course, only update the TaskId and Name.
                     var existingTest = await _context.Tests
-                        .Include(t => t.Course) // Make sure to load the course, but do not change it
-                        .FirstOrDefaultAsync(t => t.Id == test.Id);
+                        .Include(t => t.Questions)
+                        .FirstOrDefaultAsync(t => t.Id == id);
 
                     if (existingTest == null)
                     {
                         return NotFound();
                     }
 
-                    existingTest.Name = test.Name; // Update the Name
-                    existingTest.TaskId = test.TaskId; // Update the TaskId
+                    // Aktualizujemy nazwę testu i przypisanie do kursu
+                    existingTest.Name = test.Name;
+                    existingTest.CourseId = test.CourseId;
+
+                    // Aktualizacja pytań
+                    existingTest.Questions.Clear();
+                    if (Questions != null && Questions.Count > 0)
+                    {
+                        foreach (var question in Questions)
+                        {
+                            existingTest.Questions.Add(new Question
+                            {
+                                Description = question.Description,
+                                AnswerA = question.AnswerA,
+                                AnswerB = question.AnswerB,
+                                AnswerC = question.AnswerC,
+                                AnswerD = question.AnswerD,
+                                CorrectAnswer = question.CorrectAnswer
+                            });
+                        }
+                    }
 
                     _context.Update(existingTest);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TestExists(test.Id))
+                    if (!_context.Tests.Any(e => e.Id == id))
                     {
                         return NotFound();
                     }
@@ -175,9 +193,10 @@ namespace Onboarding.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.CourseId = new SelectList(_context.Courses, "Id", "Name", test.CourseId);
             return View(test);
         }
-
 
 
         // GET: Tests/Delete/5
@@ -189,39 +208,49 @@ namespace Onboarding.Controllers
             }
 
             var test = await _context.Tests
-                .Include(t => t.Task)
-                 .Include(t => t.Course)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                 .Include(t => t.Course) 
+                 .Include(t => t.Questions)
+                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (test == null)
             {
                 return NotFound();
             }
 
-            ViewBag.Tasks = test.Task; 
-            return View(test);
+            return View(test);  // Pass the test with questions to the view
         }
 
 
-
-        // POST: Tests/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var test = await _context.Tests.FindAsync(id);
+            var test = await _context.Tests
+                .Include(t => t.Questions) // Ładujemy powiązane pytania
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             if (test != null)
             {
-                _context.Tests.Remove(test);
+                try
+                {
+                    // Usuwamy pytania związane z testem
+                    _context.Questions.RemoveRange(test.Questions);
+                    // Usuwamy test
+                    _context.Tests.Remove(test);
+
+                    // Zapisujemy zmiany w bazie danych
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    // W przypadku błędu, np. problemów z relacjami lub zależnościami
+                    Console.WriteLine($"Błąd podczas usuwania testu: {ex.Message}");
+                    return StatusCode(500, "Wystąpił błąd podczas usuwania testu.");
+                }
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TestExists(int id)
-        {
-            return _context.Tests.Any(e => e.Id == id);
-        }
     }
 }

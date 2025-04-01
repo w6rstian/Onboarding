@@ -1,34 +1,73 @@
-﻿@model Onboarding.Models.Course
+﻿@model Onboarding.Models.Test
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edytuj Test";
 }
 
-<h1>Edit</h1>
+<h1>Edytuj Test</h1>
 
-<h4>Course</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label for="Name">Nazwa</label>
+        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
     </div>
-</div>
+    <div class="form-group">
+        <label for="CourseId">Kurs</label>
+        <select class="form-control" id="CourseId" name="CourseId">
+            @foreach (var course in ViewBag.CourseId as SelectList)
+            {
+                <option value="@course.Value" selected="@(course.Value == Model.CourseId.ToString())">@course.Text</option>
+            }
+        </select>
+    </div>
+
+    <h3>Pytania</h3>
+    <div id="questions-container">
+        @if (Model.Questions != null && Model.Questions.Count > 0)
+        {
+            for (var i = 0; i < Model.Questions.Count; i++)
+            {
+                <div class="question-group mt-3 p-3 border rounded">
+                    <label>Pytanie:</label>
+                    <input type="text" class="form-control" name="Questions[@i].Description" value="@Model.Questions.ElementAt(i).Description" required />
+                    <button type="button" class="btn btn-danger mt-2" onclick="removeQuestion(this)">Usuń</button>
+                </div>
+            }
+        }
+    </div>
+
+    <button type="button" class="btn btn-secondary" onclick="addQuestion()">Dodaj pytanie</button>
+
+    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+</form>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Powrót do listy</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        let questionIndex = @Model.Questions?.Count ?? 0;
+
+        function addQuestion() {
+            const container = document.getElementById("questions-container");
+
+            const questionHtml = `
+                                <div class="question-group mt-3 p-3 border rounded">
+                                    <label>Pytanie:</label>
+                                    <input type="text" class="form-control" name="Questions[${questionIndex}].Description" required />
+                                    <button type="button" class="btn btn-danger mt-2" onclick="removeQuestion(this)">Usuń</button>
+                                </div>
+                            `;
+
+            container.insertAdjacentHTML("beforeend", questionHtml);
+            questionIndex++;
+        }
+
+        function removeQuestion(button) {
+            button.parentElement.remove();
+        }
+    </script>
 }

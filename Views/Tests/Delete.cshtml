@@ -23,19 +23,22 @@
                     <dt class="col-sm-3 fw-bold text-start">Nazwa</dt>
                     <dd class="col-sm-9 text-muted text-start">@Html.DisplayFor(model => model.Name)</dd>
 
-                    <dt class="col-sm-3 fw-bold text-start">Zadania</dt>
+                    <dt class="col-sm-3 fw-bold text-start">Pytania</dt>
                     <dd class="col-sm-9 text-start">
-                        @if (ViewBag.Tasks != null)
+                        @if (Model.Questions != null && Model.Questions.Any())
                         {
                             <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    @ViewBag.Tasks.Title
-                                </li>
+                                @foreach (var question in Model.Questions)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        @question.Description
+                                    </li>
+                                }
                             </ul>
                         }
                         else
                         {
-                            <span class="text-muted">Brak przypisanych zadań</span>
+                            <span class="text-muted">Brak pytań w tym teście</span>
                         }
                     </dd>
                 </dl>
