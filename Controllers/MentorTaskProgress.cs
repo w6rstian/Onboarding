@@ -55,6 +55,7 @@ public class MentorTaskProgress : Controller
                 CompletedSteps = completedSteps,
                 TotalSteps = totalSteps,
                 Status = ut.Status
+
             };
         }).ToList();
 
@@ -67,4 +68,39 @@ public class MentorTaskProgress : Controller
     {
         return int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "0");
     }
+	// GET: /MentorTaskProgress/Grade/5
+	[HttpGet]
+	public async Task<IActionResult> Grade(int userId, int taskId)
+	{
+		var userTask = await _context.UserTasks
+			.Include(ut => ut.user)
+			.Include(ut => ut.Task)
+			.FirstOrDefaultAsync(ut => ut.UserId == userId && ut.TaskId == taskId);
+
+		if (userTask == null)
+			return NotFound();
+
+		ViewBag.UserName = userTask.user.Name;
+		ViewBag.TaskTitle = userTask.Task.Title;
+
+		return View(userTask);
+	}
+
+
+	// POST: /MentorTaskProgress/Grade
+	[HttpPost]
+	[ValidateAntiForgeryToken]
+	public async Task<IActionResult> Grade(int userTaskId, string grade)
+	{
+		var userTask = await _context.UserTasks.FindAsync(userTaskId);
+		if (userTask == null)
+			return NotFound();
+
+		userTask.Grade = grade;
+
+		_context.Update(userTask);
+		await _context.SaveChangesAsync();
+
+		return RedirectToAction("Details", new { id = userTask.TaskId });
+	}
 }

@@ -13,6 +13,7 @@
                 <th scope="col">Imię i nazwisko</th>
                 <th scope="col">Status</th>
                 <th scope="col">Ukończone kroki</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +23,14 @@
                     <td>@item.User.Name @item.User.Surname</td>
                     <td>@item.Status</td>
                     <td>@item.CompletedSteps / @item.TotalSteps</td>
+                    <td>
+                        <a asp-action="Grade"
+                       asp-route-userId="@item.User.Id"
+                       asp-route-taskId="@ViewContext.RouteData.Values["id"]"
+                       class="btn btn-sm btn-success">
+                        Wystaw ocenę
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>

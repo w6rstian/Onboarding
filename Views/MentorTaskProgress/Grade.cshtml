@@ -1,0 +1,21 @@
+﻿@model Onboarding.Models.UserTask
+
+@{
+    ViewData["Title"] = "Wystaw ocenę";
+}
+
+<h2>Wystaw ocenę</h2>
+
+<p><strong>Użytkownik:</strong> @ViewBag.UserName</p>
+<p><strong>Zadanie:</strong> @ViewBag.TaskTitle</p>
+
+<form asp-action="Grade" method="post">
+    <input type="hidden" name="userTaskId" value="@Model.UserTaskId" />
+
+    <div class="form-group">
+        <label for="grade">Ocena:</label>
+        <input type="text" name="grade" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+</form>

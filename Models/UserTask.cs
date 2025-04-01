@@ -14,6 +14,8 @@
 
 		// Indywidualne kroki użytkownika przechowywane w JSON
 		public string UserTaskStepsJson { get; set; }
+
+		public string Grade { get; set; }
 	}
 
 }

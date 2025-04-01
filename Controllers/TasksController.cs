@@ -336,8 +336,9 @@ namespace Onboarding.Controllers
                     TaskId = task.Id,
                     UserId = userId,
                     Status = StatusTask.InProgress,
+                    Grade = "brak",
 
-                    UserTaskStepsJson = task.StepsJson
+					UserTaskStepsJson = task.StepsJson
                 };
 
 				_context.UserTasks.Add(userTask);
