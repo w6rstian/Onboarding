@@ -19,6 +19,7 @@ namespace Onboarding.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ManageRoles()
         {
             // Pobieramy wszystkich użytkowników
@@ -45,6 +46,7 @@ namespace Onboarding.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateRoles(int userId, List<string> selectedRoles)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -90,6 +92,7 @@ namespace Onboarding.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin,HR")]
         public async Task<IActionResult> ManageUsers(string searchTerm)
         {
             var users = _userManager.Users.AsQueryable();
