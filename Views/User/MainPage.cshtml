@@ -7,6 +7,13 @@
             <a href="/Admin/AdminPanel" class="btn btn-secondary">Przejdź do panelu administratora</a>
             <a href="/User/MyAccount" class="btn btn-secondary">Moje konto</a>
             <a href="@Url.Action("UserList", "Chat")" class="btn btn-secondary">Chat</a>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form method="post" action="@Url.Action("Logout", "User")" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                }
 
         </div>
     </header>

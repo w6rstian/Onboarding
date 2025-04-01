@@ -5,15 +5,15 @@
 }
 
 <h1>Create Test</h1>
-
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label for="Name">Nazwa</label>
-        <input type="text" class="form-control" id="Name" name="Name" required />
+        <label for="Name">Nazwa testu</label>
+        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
     </div>
+
     <div class="form-group">
         <label for="CourseId">Kurs</label>
-        <select class="form-control" id="CourseId" name="CourseId">
+        <select class="form-control" id="CourseId" name="CourseId" required>
             <option value="">Wybierz kurs</option>
             @foreach (var course in ViewBag.CourseId as SelectList)
             {
@@ -21,23 +21,57 @@
             }
         </select>
     </div>
-    <div class="form-group">
-        <label for="TaskId">Zadanie</label>
-        <select class="form-control" id="TaskId" name="TaskId">
-            <option value="">Wybierz zadanie</option>
-            @foreach (var task in ViewBag.TaskId as SelectList)
-            {
-                <option value="@task.Value">@task.Text</option>
-            }
-        </select>
+
+    <h3>Pytania</h3>
+    <div id="questions-container">
+        <!-- Pytania będą dynamicznie dodawane tutaj -->
     </div>
-    <button type="submit" class="btn btn-primary">Dodaj</button>
+
+    <button type="button" class="btn btn-secondary" onclick="addQuestion()">Dodaj pytanie</button>
+
+    <button type="submit" class="btn btn-primary">Dodaj test</button>
 </form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script>
+    let questionIndex = 0;
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    function addQuestion() {
+        const container = document.getElementById("questions-container");
+
+        const questionHtml = `
+                    <div class="question-group mt-3 p-3 border rounded">
+                        <label>Pytanie:</label>
+                        <input type="text" class="form-control" name="Questions[${questionIndex}].Description" required />
+
+                        <label>Odpowiedź A:</label>
+                        <input type="text" class="form-control" name="Questions[${questionIndex}].AnswerA" required />
+
+                        <label>Odpowiedź B:</label>
+                        <input type="text" class="form-control" name="Questions[${questionIndex}].AnswerB" required />
+
+                        <label>Odpowiedź C:</label>
+                        <input type="text" class="form-control" name="Questions[${questionIndex}].AnswerC" required />
+
+                        <label>Odpowiedź D:</label>
+                        <input type="text" class="form-control" name="Questions[${questionIndex}].AnswerD" required />
+
+                        <label>Poprawna odpowiedź:</label>
+                        <select class="form-control" name="Questions[${questionIndex}].CorrectAnswer">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+
+                        <button type="button" class="btn btn-danger mt-2" onclick="removeQuestion(this)">Usuń</button>
+                    </div>
+                `;
+
+        container.insertAdjacentHTML("beforeend", questionHtml);
+        questionIndex++;
+    }
+
+    function removeQuestion(button) {
+        button.parentElement.remove();
+    }
+</script>
