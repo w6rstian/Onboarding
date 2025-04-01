@@ -39,7 +39,12 @@ namespace Onboarding.Controllers
             var tempUserTask = new UserTask
             {
                 user = nowy1,
-                Status = StatusTask.InProgress
+                Status = StatusTask.InProgress,
+                Task = new Models.Task
+                {
+                    Title = "Testowy task",
+                    Description = "Ten task jest sztuczny"
+                }
             };
 
             if (currentUser == nowy1.Buddy)
