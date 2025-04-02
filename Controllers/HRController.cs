@@ -7,6 +7,7 @@ using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Onboarding.Controllers
 {
@@ -23,7 +24,8 @@ namespace Onboarding.Controllers
 			_emailSender = emailSender;
 		}
 
-		public IActionResult CreateEmployee()
+        [Authorize(Roles = "Admin,HR")]
+        public IActionResult CreateEmployee()
 		{
 			return View();
 		}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -46,11 +47,23 @@ namespace Onboarding.Controllers
             return View(userCourse);
         }
 
+        [Authorize(Roles = "Admin,HR")]
         // GET: UserCourses/Create
         public IActionResult Create()
         {
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Name");
-            ViewData["UserId"] = new SelectList(_context.Users.Select(u => new {u.Id,Name = u.Name+" "+u.Surname}),"Id","Name");
+
+            var UsersNowy = (from user in _context.Users
+                            join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                            join role in _context.Roles on userRole.RoleId equals role.Id
+                            where role.Name == "Nowy"
+                            select new
+                            {
+                                user.Id,
+                                Name = user.Name + " " + user.Surname
+                            }).ToList();
+
+            ViewData["UserId"] = new SelectList(UsersNowy, "Id", "Name");
             return View();
         }
 

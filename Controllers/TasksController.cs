@@ -58,6 +58,7 @@ namespace Onboarding.Controllers
             return View(task);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         // GET: Tasks/Create
         public IActionResult Create()
         {
