@@ -12,7 +12,7 @@ using Onboarding.Data;
 using Onboarding.Models;
 using Task = Onboarding.Models.Task;
 using System.Text.Json;
-using StatusTask = Onboarding.Models.StatusTask;
+using StatusTask = Onboarding.Data.Enums.StatusTask;
 using Newtonsoft.Json;
 namespace Onboarding.Controllers
 {

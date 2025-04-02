@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Onboarding.Data;
+using Onboarding.Data.Enums;
 using Onboarding.Models;
 
 namespace Onboarding.Controllers

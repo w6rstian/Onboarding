@@ -1,4 +1,6 @@
-﻿namespace Onboarding.Models
+﻿using Onboarding.Data.Enums;
+
+namespace Onboarding.Models
 {
 	public class UserTask
 	{

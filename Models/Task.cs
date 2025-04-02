@@ -14,7 +14,6 @@ namespace Onboarding.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public int CourseId { get; set; }
-        public MyTaskStatus Status { get; set; } =   MyTaskStatus.NotStarted;
         public Course Course { get; set; }
         //public ICollection<Test> Tests { get; set; }
         public ICollection<Article> Articles { get; set; } = new List<Article>();

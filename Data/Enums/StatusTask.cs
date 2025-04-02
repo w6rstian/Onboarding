@@ -1,4 +1,4 @@
-﻿namespace Onboarding.Models
+﻿namespace Onboarding.Data.Enums
 {
 	public enum StatusTask
 	{
