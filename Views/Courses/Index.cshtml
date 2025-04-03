@@ -4,32 +4,44 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<div class="container-custom">
+    <h1 class="header-custom">Lista kursów</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <p>
+        <a asp-action="Create" -
+           class="btn btn-primary btn-custom">Utwórz nowy kurs</a>
+    </p>
+
+    @if (Model.Any())
+    {
+        <div class="courses-list">
+            @foreach (var item in Model)
+            {
+                <div class="card-custom">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon">
+                                <i class="bi bi-book"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold">@Html.DisplayFor(modelItem => item.Name)</div>
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="link-custom me-2">Edytuj</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="link-custom me-2">Szczegóły</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="link-custom text-danger">Usuń</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-data">
+            <i class="bi bi-emoji-frown" style="font-size: 2em;"></i>
+            <p>Brak kursów do wyświetlenia.</p>
+        </div>
+    }
+</div>
