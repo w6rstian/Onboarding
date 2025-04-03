@@ -20,15 +20,22 @@ namespace Onboarding.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ManageRoles()
+        public async Task<IActionResult> ManageRoles(string searchTerm)
         {
-            // Pobieramy wszystkich użytkowników
-            var users = await _userManager.Users.ToListAsync();  // Musimy dodać await, aby wykonywać operację asynchroniczną
+            var usersQuery = _userManager.Users.AsQueryable();
 
-            // Pobieramy dostępne role
+            // Jeśli podano wyszukiwane hasło, filtrujemy użytkowników
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                searchTerm = searchTerm.ToLower();
+                usersQuery = usersQuery.Where(u => u.Email.ToLower().Contains(searchTerm) ||
+                                                   u.Name.ToLower().Contains(searchTerm) ||
+                                                   u.Surname.ToLower().Contains(searchTerm));
+            }
+
+            var users = await usersQuery.ToListAsync();  // Pobieramy wyniki po filtrowaniu
             var availableRoles = _roleManager.Roles.Select(r => r.Name).ToList();
 
-            // Dla każdego użytkownika pobieramy przypisane role
             var model = new List<ManageRolesViewModel>();
 
             foreach (var user in users)
@@ -43,8 +50,10 @@ namespace Onboarding.Controllers
                 });
             }
 
+            ViewData["SearchTerm"] = searchTerm; // Przekazujemy wartość wyszukiwania do widoku
             return View(model);
         }
+
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateRoles(int userId, List<string> selectedRoles)
