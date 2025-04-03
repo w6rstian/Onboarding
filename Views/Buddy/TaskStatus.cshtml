@@ -1,82 +1,74 @@
 ﻿@using Onboarding.Data.Enums
+@model List<Onboarding.Models.UserTask>
+
 @{
     ViewData["Title"] = "Postęp Nowego";
 }
-@model List<Onboarding.Models.UserTask>
 
-<head>
-    <link rel="stylesheet" href="~/css/colors.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-
-<body style="background-color: var(--bg-color);">
-    <div class="container mt-5">
-        <header class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="main-title">Panel Buddy'ego</h1>
-            <div class="header-buttons">
-                <a href="/User/MainPage" class="btn btn-secondary">Wróć na stronę główną</a>
-                <a href="/User/MyAccount" class="btn btn-secondary">Moje konto</a>
-            </div>
-        </header>
-
-        <div class="row">
-            <!-- Main Content -->
-            <div class="col-md-9">
-                <section>
-                    <h2 class="role-description">Postęp zadań nowych pracowników</h2>
-                    <p class="role-description">
-                        Poniżej znajduje się lista zadań przypisanych do Twoich nowych pracowników.
-                    </p>
-                </section>
-
-                <section class="mt-4">
-                    <h3 class="role-description">Lista zadań</h3>
-                    @if (!Model.Any())
-                    {
-                        <p>Nie ma przypisanych żadnych zadań.</p>
-                    }
-                    else
-                    {
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Nazwa zadania</th>
-                                    <th>Opis</th>
-                                    <th>Pracownik</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var task in Model)
-                                {
-                                    <tr>
-                                        <td>@(task?.Task?.Title ?? "Brak tytułu")</td>
-                                        <td>@(task?.Task?.Description ?? "Brak opisu")</td>
-                                        <td>@(task?.user != null ? task.user.Name + " " + task.user.Surname : "Brak użytkownika")</td>
-                                        <td>
-                                            @switch (task?.Status ?? StatusTask.New)
-                                            {
-                                                case StatusTask.New:
-                                                    <span class="badge bg-primary">Nowe</span>
-                                                    break;
-                                                case StatusTask.InProgress:
-                                                    <span class="badge bg-warning">W trakcie</span>
-                                                    break;
-                                                case StatusTask.Completed:
-                                                    <span class="badge bg-success">Zakończone</span>
-                                                    break;
-                                                case StatusTask.Canceled:
-                                                    <span class="badge bg-danger">Anulowane</span>
-                                                    break;
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                </section>
-            </div>
+<div class="container-custom">
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="main-title">Panel Buddy'ego</h1>
+        <div class="header-buttons">
+            <a href="/User/MainPage" class="btn btn-secondary">Wróć na stronę główną</a>
+            <a href="/User/MyAccount" class="btn btn-secondary">Moje konto</a>
         </div>
-    </div>
-</body>
+    </header>
+
+    <section>
+        <h2 class="header-custom">Postęp zadań nowych pracowników</h2>
+        <p class="text-muted">
+            Poniżej znajduje się lista zadań przypisanych do Twoich nowych pracowników.
+        </p>
+    </section>
+
+    <section class="mt-4 card-custom">
+        <h3 class="header-custom">Lista zadań</h3>
+
+        @if (!Model.Any())
+        {
+            <p class="no-data">Nie ma przypisanych żadnych zadań.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-custom">
+                    <thead>
+                        <tr>
+                            <th>Nazwa zadania</th>
+                            <th>Opis</th>
+                            <th>Pracownik</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var task in Model)
+                        {
+                            <tr>
+                                <td>@(task?.Task?.Title ?? "Brak tytułu")</td>
+                                <td>@(task?.Task?.Description ?? "Brak opisu")</td>
+                                <td>@(task?.user != null ? $"{task.user.Name} {task.user.Surname}" : "Brak użytkownika")</td>
+                                <td>
+                                    @switch (task?.Status ?? StatusTask.New)
+                                    {
+                                        case StatusTask.New:
+                                            <span class="badge bg-primary">Nowe</span>
+                                            break;
+                                        case StatusTask.InProgress:
+                                            <span class="badge bg-warning">W trakcie</span>
+                                            break;
+                                        case StatusTask.Completed:
+                                            <span class="badge bg-success">Zakończone</span>
+                                            break;
+                                        case StatusTask.Canceled:
+                                            <span class="badge bg-danger">Anulowane</span>
+                                            break;
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</div>
