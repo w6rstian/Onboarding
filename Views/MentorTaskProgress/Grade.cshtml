@@ -12,6 +12,12 @@
             <p class="mb-1"><strong>Użytkownik:</strong> @ViewBag.UserName</p>
             <p class="mb-0"><strong>Zadanie:</strong> @ViewBag.TaskTitle</p>
         </div>
+        <div class="mb-4">
+            <label class="form-label"><strong>Treść przesłana do oceny:</strong></label>
+            <div class="p-3 border rounded bg-light" style="white-space: pre-wrap;">
+                @Html.Raw(Model.Container ?? "<em>Brak przesłanej treści.</em>")
+            </div>
+        </div>
 
         <form asp-action="Grade" method="post">
             <input type="hidden" name="userTaskId" value="@Model.UserTaskId" />

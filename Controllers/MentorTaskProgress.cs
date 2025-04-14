@@ -45,15 +45,10 @@ public class MentorTaskProgress : Controller
 
         var progressList = userTasks.Select(ut =>
         {
-            var steps = JsonSerializer.Deserialize<List<UserTaskStep>>(ut.UserTaskStepsJson ?? "[]");
-            var completedSteps = steps?.Count(s => s.IsCompleted) ?? 0;
-            var totalSteps = steps?.Count ?? 0;
-
+          
             return new
             {
                 User = ut.user,
-                CompletedSteps = completedSteps,
-                TotalSteps = totalSteps,
                 Status = ut.Status
 
             };
@@ -97,6 +92,7 @@ public class MentorTaskProgress : Controller
 			return NotFound();
 
 		userTask.Grade = grade;
+        userTask.Status = Onboarding.Data.Enums.StatusTask.Graded;
 
 		_context.Update(userTask);
 		await _context.SaveChangesAsync();

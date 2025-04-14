@@ -197,6 +197,7 @@
                             <div class="accordion-body">
                                 <p><strong>Opis:</strong> @task.Description</p>
                                 <p><strong>Mentor:</strong> @(task.Mentor != null ? task.Mentor.Name + " " + task.Mentor.Surname : "Brak")</p>
+                                
                                 @if (task.Links.Any())
                                 {
                                     <p><strong>Linki:</strong></p>
@@ -210,7 +211,7 @@
                                     </ul>
                                 }
                                 <a asp-controller="Tasks" asp-action="Execute" asp-route-taskId="@task.Id" class="btn btn-primary btn-custom">
-                                    Wykonaj
+                                    Wyślij do oceny
                                 </a>
                             </div>
                         </div>

@@ -338,8 +338,8 @@ namespace Onboarding.Controllers
                     UserId = userId,
                     Status = StatusTask.InProgress,
                     Grade = "brak",
+                    Container = ""
 
-					UserTaskStepsJson = task.StepsJson
                 };
 
 				_context.UserTasks.Add(userTask);
@@ -356,51 +356,28 @@ namespace Onboarding.Controllers
 			}
 			return View("Execute", userTask);
 		}
-
-		
-		[Authorize]
-		[HttpPost("{taskId?}")]
-		public async Task<IActionResult> CompleteStep([FromRoute] int? taskId, [FromQuery] int? taskIdQuery, [FromForm] int stepNumber)
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Execute(UserTask model)
 		{
-			int id = taskId ?? taskIdQuery ?? 0;
-
-			if (id == 0)
-			{
-				return BadRequest("Brak poprawnego taskId.");
-			}
-
-			var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			if (!int.TryParse(userIdString, out var userId))
-			{
-				return Unauthorized("Nie udało się odczytać ID użytkownika.");
-			}
-
-			var userTask = _context.UserTasks
-				.FirstOrDefault(ut => ut.TaskId == id && ut.UserId == userId);
+			var userTask = await _context.UserTasks
+				.Include(ut => ut.Task)
+				.FirstOrDefaultAsync(ut => ut.UserTaskId == model.UserTaskId);
 
 			if (userTask == null)
-			{
-				return NotFound($"Zadanie o ID {id} nie znaleziono.");
-			}
+				return NotFound();
 
-			var steps = JsonConvert.DeserializeObject<List<UserTaskStep>>(userTask.UserTaskStepsJson);
-			var stepToUpdate = steps.FirstOrDefault(s => s.StepNumber == stepNumber);
+			userTask.Container = model.Container;
+            userTask.Status = StatusTask.Completed;
 
-			if (stepToUpdate != null)
-			{
-				stepToUpdate.IsCompleted = true;
-				userTask.UserTaskStepsJson = JsonConvert.SerializeObject(steps);
+			await _context.SaveChangesAsync();
 
-				if (steps.All(s => s.IsCompleted))
-				{
-					userTask.Status = StatusTask.Completed;
-				}
-
-				await _context.SaveChangesAsync();
-			}
-
-			return RedirectToAction("Execute", new { taskId = id });
+			TempData["Message"] = "Odpowiedź została zapisana!";
+			return RedirectToAction("Execute", new { taskId = userTask.TaskId });
 		}
+
+
+
 
 
 	}

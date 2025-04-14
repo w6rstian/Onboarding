@@ -22,6 +22,5 @@ namespace Onboarding.Models
 
         public ICollection<CourseTask> CourseTasks { get; set; } = new List<CourseTask>();
 
-		public string StepsJson { get; set; }
 	}
 }

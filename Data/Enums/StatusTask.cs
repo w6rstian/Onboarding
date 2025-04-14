@@ -5,6 +5,7 @@
 		New,
 		InProgress,
 		Completed,
-		Canceled
+		Canceled,
+		Graded
 	}
 }
