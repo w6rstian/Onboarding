@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,12 @@ namespace Onboarding.Controllers
     public class UserCoursesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public UserCoursesController(ApplicationDbContext context)
+        public UserCoursesController(ApplicationDbContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: UserCourses
@@ -49,21 +52,19 @@ namespace Onboarding.Controllers
 
         [Authorize(Roles = "Admin,HR")]
         // GET: UserCourses/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Name");
 
-            var UsersNowy = (from user in _context.Users
-                            join userRole in _context.UserRoles on user.Id equals userRole.UserId
-                            join role in _context.Roles on userRole.RoleId equals role.Id
-                            where role.Name == "Nowy"
-                            select new
-                            {
-                                user.Id,
-                                Name = user.Name + " " + user.Surname
-                            }).ToList();
+            var usersInRoleNowy = await _userManager.GetUsersInRoleAsync("Nowy");
 
-            ViewData["UserId"] = new SelectList(UsersNowy, "Id", "Name");
+            var userList = usersInRoleNowy.Select(u => new
+            {
+                u.Id,
+                FullName = u.Name + " " + u.Surname
+            }).ToList();
+
+            ViewData["UserId"] = new SelectList(userList, "Id", "FullName");
             return View();
         }
 
@@ -103,8 +104,12 @@ namespace Onboarding.Controllers
             {
                 return NotFound();
             }
+
+            var usersInRoleNowy = await _userManager.GetUsersInRoleAsync("Nowy");
+
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Name", userCourse.CourseId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Name", userCourse.UserId);
+            ViewData["UserId"] = new SelectList(usersInRoleNowy, "Id", "Name", userCourse.UserId);
+
             return View(userCourse);
         }
 
