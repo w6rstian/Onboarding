@@ -56,37 +56,43 @@ namespace Onboarding.Controllers
 
 
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateRoles(int userId, List<string> selectedRoles)
+        public async Task<IActionResult> UpdateRole(int userId, string selectedRole)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
-            {
-                return NotFound();
-            }
+            if (user == null) return NotFound();
 
             var currentRoles = await _userManager.GetRolesAsync(user);
-            var rolesToAdd = selectedRoles.Except(currentRoles).ToList();
-            var rolesToRemove = currentRoles.Except(selectedRoles).ToList();
 
-            // Dodanie nowych ról
-            if (rolesToAdd.Any())
+            // Sprawdzamy, czy użytkownik ma rolę "Admin" i nie pozwalamy na jej usunięcie
+            var isUserAdmin = currentRoles.Contains("Admin");
+            var isRemovingAdmin = isUserAdmin && selectedRole != "Admin";
+
+            if (isRemovingAdmin)
             {
-                await _userManager.AddToRolesAsync(user, rolesToAdd);
+                var allAdmins = await _userManager.GetUsersInRoleAsync("Admin");
+                var currentUserId = int.Parse(_userManager.GetUserId(User));
+
+                var isOnlyAdmin = allAdmins.Count == 1;
+                var isCurrentUser = currentUserId == userId;
+
+                if (isOnlyAdmin)
+                {
+                    TempData["Error"] = "Nie można usunąć roli 'Admin' ostatniemu administratorowi.";
+                    return RedirectToAction("ManageRoles");
+                }
+
+                if (isCurrentUser)
+                {
+                    TempData["Error"] = "Nie możesz usunąć sobie roli administratora.";
+                    return RedirectToAction("ManageRoles");
+                }
             }
 
-            // Usunięcie niepotrzebnych ról
-            if (rolesToRemove.Any())
-            {
-                await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
-            }
+            await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            await _userManager.AddToRoleAsync(user, selectedRole);
 
             return RedirectToAction("ManageRoles");
         }
-
-
-
-
-
 
         public IActionResult Index()
         {
