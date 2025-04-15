@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Onboarding.Data;
@@ -7,6 +8,7 @@ using Onboarding.Models;
 
 namespace Onboarding.Controllers
 {
+    [Authorize(Roles = "Buddy")]
     public class BuddyController : Controller
     {
         private readonly ApplicationDbContext _context;
