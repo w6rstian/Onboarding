@@ -15,7 +15,10 @@
             <hr class="mb-4">
         </div>
     </div>
-
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <form method="get" class="mb-0">
@@ -31,10 +34,6 @@
             </form>
         </div>
     </div>
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger">@TempData["Error"]</div>
-    }
     @foreach (var userRoleModel in Model)
     {
         <div class="card shadow-sm mb-4">
