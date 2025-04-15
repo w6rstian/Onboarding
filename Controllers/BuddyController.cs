@@ -8,7 +8,7 @@ using Onboarding.Models;
 
 namespace Onboarding.Controllers
 {
-    [Authorize(Roles = "Buddy")]
+    [Authorize(Roles = "Admin,Buddy")]
     public class BuddyController : Controller
     {
         private readonly ApplicationDbContext _context;
