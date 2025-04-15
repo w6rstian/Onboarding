@@ -1,73 +1,93 @@
-﻿@model Onboarding.Models.Test
+﻿@model Onboarding.Models.Course
 
 @{
-    ViewData["Title"] = "Edytuj Test";
+    ViewData["Title"] = "Edytuj kurs";
 }
 
-<h1>Edytuj Test</h1>
+<style>
+    .course-details-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
+    .course-header {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
 
-    <div class="form-group">
-        <label for="Name">Nazwa</label>
-        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
-    </div>
-    <div class="form-group">
-        <label for="CourseId">Kurs</label>
-        <select class="form-control" id="CourseId" name="CourseId">
-            @foreach (var course in ViewBag.CourseId as SelectList)
-            {
-                <option value="@course.Value" selected="@(course.Value == Model.CourseId.ToString())">@course.Text</option>
-            }
-        </select>
-    </div>
+    .details-card,
+    .section-card {
+        background-color: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+    }
 
-    <h3>Pytania</h3>
-    <div id="questions-container">
-        @if (Model.Questions != null && Model.Questions.Count > 0)
-        {
-            for (var i = 0; i < Model.Questions.Count; i++)
-            {
-                <div class="question-group mt-3 p-3 border rounded">
-                    <label>Pytanie:</label>
-                    <input type="text" class="form-control" name="Questions[@i].Description" value="@Model.Questions.ElementAt(i).Description" required />
-                    <button type="button" class="btn btn-danger mt-2" onclick="removeQuestion(this)">Usuń</button>
-                </div>
-            }
+    .section-title {
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .btn-custom {
+        padding: 8px 20px;
+        border-radius: 20px;
+        transition: transform 0.2s;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
         }
+
+    .form-label {
+        font-weight: 500;
+        color: #34495e;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 10px 15px;
+        border: 1px solid #ced4da;
+        transition: border-color 0.3s;
+    }
+
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+</style>
+
+<div class="course-details-container">
+    <h2 class="course-header">Edytuj kurs</h2>
+
+    <div class="section-card">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label section-title"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-custom">
+                    <i class="bi bi-check-circle me-1"></i> Zapisz zmiany
+                </button>
+                <a asp-action="Index" class="btn btn-secondary btn-custom">
+                    <i class="bi bi-arrow-left me-1"></i> Powrót do listy
+                </a>
+            </div>
+        </form>
     </div>
-
-    <button type="button" class="btn btn-secondary" onclick="addQuestion()">Dodaj pytanie</button>
-
-    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-</form>
-
-<div>
-    <a asp-action="Index">Powrót do listy</a>
 </div>
 
 @section Scripts {
-    <script>
-        let questionIndex = @Model.Questions?.Count ?? 0;
-
-        function addQuestion() {
-            const container = document.getElementById("questions-container");
-
-            const questionHtml = `
-                                <div class="question-group mt-3 p-3 border rounded">
-                                    <label>Pytanie:</label>
-                                    <input type="text" class="form-control" name="Questions[${questionIndex}].Description" required />
-                                    <button type="button" class="btn btn-danger mt-2" onclick="removeQuestion(this)">Usuń</button>
-                                </div>
-                            `;
-
-            container.insertAdjacentHTML("beforeend", questionHtml);
-            questionIndex++;
-        }
-
-        function removeQuestion(button) {
-            button.parentElement.remove();
-        }
-    </script>
+    <partial name="_ValidationScriptsPartial" />
 }
