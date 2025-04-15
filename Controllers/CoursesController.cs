@@ -26,6 +26,7 @@ namespace Onboarding.Controllers
             return View(await _context.Courses.ToListAsync());
         }
 
+        
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -35,7 +36,12 @@ namespace Onboarding.Controllers
             }
 
             var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
+            .Include(c => c.UserCourses)
+            .ThenInclude(uc => uc.User)
+            .Include(c => c.Tasks)
+            .ThenInclude(t => t.Mentor)
+            .Include(c => c.Tests)
+            .FirstOrDefaultAsync(m => m.Id == id);
             if (course == null)
             {
                 return NotFound();
@@ -43,6 +49,8 @@ namespace Onboarding.Controllers
 
             return View(course);
         }
+
+
 
         [Authorize(Roles = "Admin,Manager")]
         // GET: Courses/Create
