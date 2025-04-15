@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -29,9 +32,14 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="UserCoursesList" asp-action="Index">My courses</a>
-                            </li>
+                            @if (User.IsInRole("Nowy"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="UserCoursesList" asp-action="Index">
+                                        <i class="bi bi-book"></i> My courses
+                                    </a>
+                                </li>
+                            }
                         </ul>
                         <ul class="navbar-nav">
                             <li class="nav-item">
