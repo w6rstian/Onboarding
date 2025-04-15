@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Onboarding.Controllers
 {
+    [Authorize(Roles = "Admin,Buddy,Mentor,Manager,HR")]
     public class AdminController : Controller
     {
         private readonly RoleManager<IdentityRole<int>> _roleManager;
