@@ -24,8 +24,8 @@ namespace Onboarding.Controllers
         public IActionResult Create()
         {
             var mentors = _context.Users
-                .Select(u => new { u.Id, FullName = u.Name + " " + u.Surname })
-                .ToList();
+            .Select(u => new { u.Id, FullName = u.Name + " " + u.Surname })
+            .ToList();
 
             if (!mentors.Any())
             {
@@ -51,6 +51,13 @@ namespace Onboarding.Controllers
                 if (string.IsNullOrEmpty(viewModel.CourseName))
                     ModelState.AddModelError("CourseName", "Nazwa kursu jest wymagana.");
 
+                if (viewModel.MentorId.HasValue && viewModel.MentorId.Value > 0)
+                {
+                    var mentorExists = await _context.Users.AnyAsync(u => u.Id == viewModel.MentorId.Value);
+                    if (!mentorExists)
+                        ModelState.AddModelError("MentorId", $"Mentor o ID {viewModel.MentorId.Value} nie istnieje w bazie danych.");
+                }
+
                 if (viewModel.Tasks != null)
                 {
                     Console.WriteLine($"Tasks Count: {viewModel.Tasks.Count}");
@@ -64,9 +71,7 @@ namespace Onboarding.Controllers
                         if (string.IsNullOrEmpty(task.Description))
                             ModelState.AddModelError($"Tasks[{i}].Description", "Opis zadania jest wymagany.");
                         if (task.MentorId <= 0)
-                        {
                             ModelState.AddModelError($"Tasks[{i}].MentorId", "Wybierz mentora.");
-                        }
                         else
                         {
                             var mentorExists = await _context.Users.AnyAsync(u => u.Id == task.MentorId);
@@ -84,15 +89,14 @@ namespace Onboarding.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Logowanie wszystkich błędów walidacji
                 foreach (var error in ModelState)
                 {
                     Console.WriteLine($"Validation Error: Key={error.Key}, Errors={string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
                 }
 
                 var mentors = await _context.Users
-                    .Select(u => new { u.Id, FullName = u.Name + " " + u.Surname })
-                    .ToListAsync();
+                .Select(u => new { u.Id, FullName = u.Name + " " + u.Surname })
+                .ToListAsync();
                 Console.WriteLine("Available Mentors (POST): " + string.Join(", ", mentors.Select(m => $"Id={m.Id}, Name={m.FullName}")));
                 ViewData["Mentors"] = new SelectList(mentors, "Id", "FullName");
                 return View(viewModel);
@@ -104,7 +108,8 @@ namespace Onboarding.Controllers
             {
                 var course = new Course
                 {
-                    Name = viewModel.CourseName
+                    Name = viewModel.CourseName,
+                    MentorId = viewModel.MentorId 
                 };
                 _context.Courses.Add(course);
                 await _context.SaveChangesAsync();
@@ -118,8 +123,8 @@ namespace Onboarding.Controllers
                         {
                             ModelState.AddModelError("", $"Mentor o ID {taskVM.MentorId} nie istnieje.");
                             ViewData["Mentors"] = new SelectList(
-                                await _context.Users.Select(u => new { u.Id, FullName = u.Name + " " + u.Surname }).ToListAsync(),
-                                "Id", "FullName");
+                            await _context.Users.Select(u => new { u.Id, FullName = u.Name + " " + u.Surname }).ToListAsync(),
+                            "Id", "FullName");
                             return View(viewModel);
                         }
 
@@ -202,8 +207,8 @@ namespace Onboarding.Controllers
                 await transaction.RollbackAsync();
                 ModelState.AddModelError("", $"Wystąpił błąd: {ex.Message}");
                 ViewData["Mentors"] = new SelectList(
-                    await _context.Users.Select(u => new { u.Id, FullName = u.Name + " " + u.Surname }).ToListAsync(),
-                    "Id", "FullName");
+                await _context.Users.Select(u => new { u.Id, FullName = u.Name + " " + u.Surname }).ToListAsync(),
+                "Id", "FullName");
                 return View(viewModel);
             }
         }
