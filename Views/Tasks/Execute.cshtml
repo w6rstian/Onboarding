@@ -80,7 +80,15 @@
             <span asp-validation-for="Container" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-success btn-submit">Wyślij do oceny</button>
+        @if (Model.Status == Onboarding.Data.Enums.StatusTask.Graded)
+        {
+            <a href="@Url.Action("RateMentor", "Rewards", new { mentorId = Model.Task.MentorId, taskId = Model.TaskId })" class="btn btn-success">Oceń mentora</a>
+
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary mt-3">Wyślij do oceny</button>
+        }
     </form>
 
     <a asp-action="Details" asp-controller="UserCoursesList" asp-route-id="@Model.Task.CourseId" class="btn btn-secondary btn-back btn-custom">
