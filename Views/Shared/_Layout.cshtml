@@ -57,8 +57,16 @@
                             @if (User.IsInRole("Buddy"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Buddy" asp-action="TaskStatus">
-                                        <i class="bi bi-book"></i> Task Status
+                                    <a class="nav-link" asp-area="" asp-controller="Buddy" asp-action="BuddyPanel">
+                                        <i class="bi bi-book"></i> Buddy Panel
+                                    </a>
+                                </li>
+                            }
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminPanel">
+                                        <i class="bi bi-book"></i> Admin Panel
                                     </a>
                                 </li>
                             }
