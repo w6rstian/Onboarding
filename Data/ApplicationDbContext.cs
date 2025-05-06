@@ -28,7 +28,9 @@ namespace Onboarding.Data
 
 		public DbSet<UserTestResult> UserTestResults { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<CheckInMeeting> CheckInMeetings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
