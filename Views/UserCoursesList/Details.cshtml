@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Szczegóły kursu";
+  
+    var userResults = ViewBag.UserTestResults as List<Onboarding.Models.UserTestResult>;
+
 }
 
 <style>
@@ -234,6 +237,8 @@
                     <tr>
                         <th>ID</th>
                         <th>Nazwa testu</th>
+                        <th>Wynik</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -242,6 +247,36 @@
                         <tr>
                             <td>@test.Id</td>
                             <td>@test.Name</td>
+                            <td>
+                                @{
+                                    var result = userResults?.FirstOrDefault(r => r.TestId == test.Id);
+                                    if (result != null)
+                                    {
+                                        var totalQuestions = test.Questions?.Count ?? 0;
+                                        <text>@result.CorrectAnswers / @totalQuestions</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Nie rozwiązano</text>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @{
+                                    
+                                    if (result != null)
+                                    {
+                                        <button class="btn btn-secondary btn-custom" disabled>Test ukończony</button>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="Tests" asp-action="Execute" asp-route-id="@test.Id" class="btn btn-primary btn-custom">
+                                            Rozpocznij test
+                                        </a>
+                                    }
+                                }
+                            </td>
+
                         </tr>
                     }
                 </tbody>

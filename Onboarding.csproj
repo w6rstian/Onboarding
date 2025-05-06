@@ -14,7 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\UserTestResult.cs" />
     <Compile Remove="Views\Home\ValuesController.cs" />
+    <Compile Remove="Views\Tests\Execute.cs" />
+    <Compile Remove="Views\Tests\Execute.cshtml.cs" />
   </ItemGroup>
 
 	<ItemGroup>

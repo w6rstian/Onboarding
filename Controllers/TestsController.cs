@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Onboarding.Data;
 using Onboarding.Models;
+using Onboarding.ViewModels;
 
 namespace Onboarding.Controllers
 {
@@ -254,5 +256,89 @@ namespace Onboarding.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-    }
+		[HttpGet]
+		public async Task<IActionResult> Execute(int id)
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var alreadyTaken = await _context.UserTestResults
+				.AnyAsync(r => r.TestId == id && r.UserId == userId);
+			if (alreadyTaken)
+			{
+				TempData["Error"] = "Już rozwiązałeś ten test.";
+				return RedirectToAction("Details", new { id });
+			}
+
+			var test = await _context.Tests
+				.Include(t => t.Questions)
+				.FirstOrDefaultAsync(t => t.Id == id);
+
+			if (test == null) return NotFound();
+
+			var vm = new TestViewModel
+			{
+				TestId = test.Id,
+				Name = test.Name,
+				CourseId = test.CourseId,
+				Questions = test.Questions.Select(q => new QuestionViewModel
+				{
+					Id = q.Id,
+					Description = q.Description,
+					AnswerA = q.AnswerA,
+					AnswerB = q.AnswerB,
+					AnswerC = q.AnswerC,
+					AnswerD = q.AnswerD,
+					CorrectAnswer = q.CorrectAnswer
+				}).ToList(),
+				Answers = test.Questions.Select(q => new AnswerSubmissionModel
+				{
+					QuestionId = q.Id
+				}).ToList()
+			};
+
+			return View(vm);
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Execute(TestViewModel model)
+		{
+			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+			var alreadyTaken = await _context.UserTestResults
+				.AnyAsync(r => r.TestId == model.TestId && r.UserId == userId);
+			if (alreadyTaken)
+			{
+				TempData["Error"] = "Już rozwiązałeś ten test.";
+				return RedirectToAction("Details", new { id = model.TestId });
+			}
+
+			var questions = await _context.Questions
+				.Where(q => q.TestId == model.TestId)
+				.ToListAsync();
+
+			int correct = 0;
+			foreach (var ans in model.Answers)
+			{
+				var q = questions.FirstOrDefault(x => x.Id == ans.QuestionId);
+				if (q != null && ans.SelectedAnswer == q.CorrectAnswer)
+				{
+					correct++;
+				}
+			}
+
+			var result = new UserTestResult
+			{
+				UserId = userId,
+				TestId = model.TestId,
+				TakenDate = DateTime.Now,
+				CorrectAnswers = correct
+			};
+
+			_context.UserTestResults.Add(result);
+			await _context.SaveChangesAsync();
+
+			TempData["Message"] = $"Twój wynik: {correct} poprawnych odpowiedzi.";
+			return RedirectToAction("Details", "UserCoursesList", new { id = model.CourseId });
+
+		}
+	}
 }

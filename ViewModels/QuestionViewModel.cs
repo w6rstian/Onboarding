@@ -2,7 +2,8 @@
 {
     public class QuestionViewModel
     {
-        public string Description { get; set; }
+		public int Id { get; set; }
+		public string Description { get; set; }
         public string AnswerA { get; set; }
         public string AnswerB { get; set; }
         public string AnswerC { get; set; }

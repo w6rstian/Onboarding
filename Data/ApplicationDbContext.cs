@@ -26,6 +26,8 @@ namespace Onboarding.Data
 
 		public DbSet<UserTask> UserTasks { get; set; }
 
+		public DbSet<UserTestResult> UserTestResults { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
