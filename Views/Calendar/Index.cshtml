@@ -17,6 +17,22 @@
 
 <div id="calendar"></div>
 
+<div class="modal fade" id="meetingModal" tabindex="-1" aria-labelledby="meetingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="meetingModalLabel">Szczegóły spotkania</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Tytuł:</strong> <span id="modalTitle"></span></p>
+                <p><strong>Data rozpoczęcia:</strong> <span id="modalStart"></span></p>
+                <p><strong>Data zakończenia:</strong> <span id="modalEnd"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
 
@@ -25,7 +41,9 @@
         max-width: 900px;
         margin: 40px auto;
     }
+
 </style>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -33,7 +51,15 @@
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             locale: 'pl',
-            events: '/Calendar/GetEvents'
+            events: '/Calendar/GetEvents',
+            eventClick: function(info) {
+                var event = info.event;
+                document.getElementById('modalTitle').textContent = event.title;
+                document.getElementById('modalStart').textContent = event.start.toLocaleString();
+                document.getElementById('modalEnd').textContent = event.end ? event.end.toLocaleString() : "Brak daty zakończenia";
+                var modal = new bootstrap.Modal(document.getElementById('meetingModal'));
+                modal.show();
+            }
         });
         calendar.render();
     });

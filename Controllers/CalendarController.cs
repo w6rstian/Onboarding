@@ -79,22 +79,36 @@ namespace Onboarding.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetEvents()
+        public async Task<JsonResult> GetEvents()
         {
-            // przykładowe dane
-            var events = new[]
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            var meetings = await _context.CheckInMeetings
+                .Where(m => m.BuddyId == currentUser.Id || m.NewUserId == currentUser.Id)
+                .ToListAsync();
+
+            var events = meetings.Select(m => new
             {
-            new {
-                title = "Spotkanie zespołu",
-                start = "2025-05-10T10:00:00",
-                end = "2025-05-10T11:00:00"
-            },
-            new {
-                title = "Lunch z klientem",
-                start = "2025-05-12T13:00:00",
-                end = "2025-05-12T14:00:00"
-            }
-        };
+                title = m.Title ?? "Check-In",
+                start = m.Start.ToString("s"),
+                end = m.End.ToString("s")
+            }).ToList();
+
+            var exampleEvents = new[]
+            {
+                new {
+                    title = "Spotkanie zespołu",
+                    start = "2025-05-10T10:00:00",
+                    end = "2025-05-10T11:00:00"
+                },
+                new {
+                    title = "Lunch z klientem",
+                    start = "2025-05-12T13:00:00",
+                    end = "2025-05-12T14:00:00"
+                }
+            };
+
+            events.AddRange(exampleEvents);
 
             return Json(events);
         }
