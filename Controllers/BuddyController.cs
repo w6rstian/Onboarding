@@ -105,9 +105,13 @@ namespace Onboarding.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
-            var tasks = _context.UserTasks
-                .Where(t => t.user.Buddy == currentUser)
-                .ToList();
+var tasks = await _context.UserTasks
+    .Where(t => t.user.Buddy == currentUser)
+    .Include(t => t.Task)
+        .ThenInclude(task => task.Course)
+    .Include(t => t.user)
+    .ToListAsync();
+
 
 
             // DEBUG
