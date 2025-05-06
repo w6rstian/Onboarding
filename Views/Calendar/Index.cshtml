@@ -1,9 +1,20 @@
 ﻿@{
     ViewBag.Title = "Kalendarz";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var isBuddy = User.IsInRole("Buddy");
 }
 
 <h2>Kalendarz</h2>
+
+@if (isBuddy)
+{
+    <div class="mb-4 text-end">
+        <a href="/Calendar/CreateCheckIn" class="btn btn-success">
+            + Zaplanuj spotkanie z Nowym
+        </a>
+    </div>
+}
+
 <div id="calendar"></div>
 
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet" />
