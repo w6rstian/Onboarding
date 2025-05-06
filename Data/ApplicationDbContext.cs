@@ -30,6 +30,8 @@ namespace Onboarding.Data
 
         public DbSet<CheckInMeeting> CheckInMeetings { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -127,6 +129,9 @@ namespace Onboarding.Data
                 .WithMany(t => t.Links)
                 .HasForeignKey(l => l.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Notification>()
+                .HasIndex(n => new { n.UserId, n.IsRead });
         }
     }
 }
