@@ -32,6 +32,11 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Calendar" asp-action="Index">
+                                    <i class="bi bi-calendar-event"></i> Kalendarz
+                                </a>
+                            </li>
                             @if (User.IsInRole("Nowy"))
                             {
                                 <li class="nav-item">

@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Kalendarz";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Kalendarz</h2>
+<div id="calendar"></div>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js"></script>
+
+<style>
+    #calendar {
+        max-width: 900px;
+        margin: 40px auto;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'pl',
+            events: '/Calendar/GetEvents'
+        });
+        calendar.render();
+    });
+</script>
