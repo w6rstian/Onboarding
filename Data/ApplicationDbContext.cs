@@ -28,7 +28,8 @@ namespace Onboarding.Data
 
 		public DbSet<UserTestResult> UserTestResults { get; set; }
 
-        public DbSet<CheckInMeeting> CheckInMeetings { get; set; }
+        public DbSet<Meeting> Meetings { get; set; }
+        public DbSet<MeetingParticipant> MeetingParticipants { get; set; }
 
         public DbSet<Notification> Notifications { get; set; }
 
@@ -129,6 +130,21 @@ namespace Onboarding.Data
                 .WithMany(t => t.Links)
                 .HasForeignKey(l => l.TaskId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MeetingParticipant>()
+                .HasKey(mp => mp.Id);
+
+            modelBuilder.Entity<MeetingParticipant>()
+                .HasOne(mp => mp.Meeting)
+                .WithMany(m => m.Participants)
+                .HasForeignKey(mp => mp.MeetingId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<MeetingParticipant>()
+                .HasOne(mp => mp.User)
+                .WithMany()
+                .HasForeignKey(mp => mp.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Notification>()
                 .HasIndex(n => new { n.UserId, n.IsRead });

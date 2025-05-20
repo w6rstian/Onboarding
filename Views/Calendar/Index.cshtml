@@ -6,14 +6,27 @@
 
 <h2>Kalendarz</h2>
 
-@if (isBuddy)
-{
-    <div class="mb-4 text-end">
-        <a href="/Calendar/CreateCheckIn" class="btn btn-success">
-            + Zaplanuj spotkanie z Nowym
+<div class="mb-4 text-end">
+    @if (isBuddy)
+    {
+        <a href="/Calendar/CreateMeeting?type=BuddyCheckIn" class="btn btn-primary me-2">
+            Zaplanuj check-in
         </a>
-    </div>
-}
+    }
+
+    <a href="/Calendar/CreateMeeting?type=General" class="btn btn-primary me-2">
+        Zaplanuj spotkanie
+    </a>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+    <select id="eventFilter" class="form-select w-auto">
+        <option value="">Wszystkie</option>
+        <option value="CheckIn">Check-In</option>
+        <option value="General">Ogólne</option>
+    </select>
+</div>
+
 
 <div id="calendar"></div>
 
@@ -55,19 +68,30 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var calendarEl = document.getElementById('calendar');
+        var currentFilter = '';
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             locale: 'pl',
-            events: '/Calendar/GetEvents',
+            events: function(fetchInfo, successCallback, failureCallback) {
+                fetch('/Calendar/GetEvents?type=' + currentFilter)
+                    .then(res => res.json())
+                    .then(data => successCallback(data))
+                    .catch(err => failureCallback(err));
+            },
             eventClick: function(info) {
-                var event = info.event;
-                document.getElementById('modalTitle').textContent = event.title;
-                document.getElementById('modalStart').textContent = event.start.toLocaleString();
-                document.getElementById('modalEnd').textContent = event.end ? event.end.toLocaleString() : "Brak daty zakończenia";
-                var modal = new bootstrap.Modal(document.getElementById('meetingModal'));
-                modal.show();
+                document.getElementById('modalTitle').textContent = info.event.title;
+                document.getElementById('modalStart').textContent = info.event.start.toLocaleString();
+                document.getElementById('modalEnd').textContent = info.event.end ? info.event.end.toLocaleString() : "Brak daty zakończenia";
+                new bootstrap.Modal(document.getElementById('meetingModal')).show();
             }
         });
+
+        document.getElementById('eventFilter').addEventListener('change', function () {
+            currentFilter = this.value;
+            calendar.refetchEvents();
+        });
+
         calendar.render();
     });
 </script>
