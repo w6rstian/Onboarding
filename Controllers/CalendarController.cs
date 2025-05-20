@@ -111,10 +111,55 @@ namespace Onboarding.Controllers
             {
                 title = m.Title ?? "Spotkanie",
                 start = m.Start.ToString("s"),
-                end = m.End.ToString("s")
+                end = m.End.ToString("s"),
+                type = m.Type.ToString()
             }).ToList();
+
+            // przykładowe spotkania żeby się dało testować
+            var exampleEvents = new List<ExampleEvent>
+            {
+                new() {
+                    Title = "Spotkanie zespołu",
+                    Start = "2025-05-10T10:00:00",
+                    End = "2025-05-10T11:00:00",
+                    Type = "General"
+                },
+                new() {
+                    Title = "Lunch z klientem",
+                    Start = "2025-05-12T13:00:00",
+                    End = "2025-05-12T14:00:00",
+                    Type = "General"
+                },
+                new() {
+                    Title = "Check-in z Basią",
+                    Start = "2025-05-15T09:00:00",
+                    End = "2025-05-15T10:00:00",
+                    Type = "CheckIn"
+                }
+            };
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                exampleEvents = exampleEvents
+                    .Where(e => e.Type == type)
+                    .ToList();
+            }
+
+            events.AddRange(exampleEvents.Select(e => new {
+                title = e.Title,
+                start = e.Start,
+                end = e.End,
+                type = e.Type
+            }));
 
             return Json(events);
         }
+    }
+    public class ExampleEvent
+    {
+        public string Title { get; set; } = null!;
+        public string Start { get; set; } = null!;
+        public string End { get; set; } = null!;
+        public string Type { get; set; } = null!;
     }
 }
