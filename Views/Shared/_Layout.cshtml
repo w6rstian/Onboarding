@@ -18,40 +18,24 @@
         <!-- Pokazuj nawigację tylko dla zalogowanych użytkowników -->
         @if (Context.User.Identity.IsAuthenticated)
         {
-            <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3 w-100 h-40">
                 <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Onboarding</a>
+                    <a class="navbar-brand fs-5" asp-area="" asp-controller="Home" asp-action="Index">Onboarding</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            @if (User.IsInRole("Buddy"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Buddy" asp-action="BuddyPanel">
-                                        <i class="bi bi-book"></i> Panel
-                                    </a>
-                                </li>
-                            }
-                            @if (User.IsInRole("Admin"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminPanel">
-                                        <i class="bi bi-book"></i> Panel
-                                    </a>
-                                </li>
-                            }
-                            @if (User.IsInRole("Mentor"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Mentor" asp-action="MentorPanel">
-                                        <i class="bi bi-book"></i> Panel
-                                    </a>
-                                </li>
-                            }
-                            @if (User.IsInRole("Manager"))
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="MainPage">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Calendar" asp-action="Index">
+                                    <i class="bi bi-calendar-event"></i> Kalendarz
+                                </a>
+                            </li>
+                            @if (User.IsInRole("Nowy"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="ManagerPanel">
@@ -70,8 +54,8 @@
                             @if (User.IsInRole("HR"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="HR" asp-action="HRPanel">
-                                        <i class="bi bi-book"></i>Panel
+                                    <a class="nav-link" asp-area="" asp-controller="Buddy" asp-action="TaskStatus">
+                                        <i class="bi bi-book"></i> Task Status
                                     </a>
                                 </li>
                             }
@@ -91,25 +75,35 @@
                                     </a>
                                 </li>
                             }
+                            
                             <li class="nav-item">
-                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Zarządzaj kontem</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="@Url.Action("UserList", "Chat")">Chat</a>
+                                <a class="nav-link" asp-area="" asp-controller="Chat" asp-action="UserList">
+                                    <i class="bi bi-chat-dots"></i> Chat
+                                </a>
                             </li>
                         </ul>
                         <ul class="navbar-nav">
+                            <!-- Dropdown for My Account -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle"></i> My Account
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="@Url.Action("MyAccount", "User")">Profile</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Settings", "User")">Settings</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Privacy", "Home")">Privacy</a></li>
+                                </ul>
+                            </li>
                             <li class="nav-item" style="display: flex; align-items: center;">
                                 @await Component.InvokeAsync("NotificationBell")
                             </li>
-                            <li class="nav-item">
+                                <li class="nav-item">
                                 <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                     <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
                                 </form>
                             </li>
-                        </ul>
 
+                        </ul>
                     </div>
                 </div>
             </nav>
@@ -120,7 +114,6 @@
             @RenderBody()
         </main>
     </div>
-
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
