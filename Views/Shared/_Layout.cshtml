@@ -38,20 +38,20 @@
                             @if (User.IsInRole("Nowy"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Manager" asp-action="ManagerPanel">
-                                        <i class="bi bi-book"></i> Panel
+                                    <a class="nav-link" asp-area="" asp-controller="UserCoursesList" asp-action="Index">
+                                        <i class="bi bi-book"></i> My courses
                                     </a>
                                 </li>
                             }
-                            @if (User.IsInRole("Nowy"))
+                            @if (User.IsInRole("Mentor"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="User" asp-action="MainPage">
-                                        <i class="bi bi-book"></i> Panel
+                                    <a class="nav-link" asp-area="" asp-controller="MentorTaskProgress" asp-action="Index">
+                                        <i class="bi bi-book"></i> My courses
                                     </a>
                                 </li>
                             }
-                            @if (User.IsInRole("HR"))
+                            @if (User.IsInRole("Buddy"))
                             {
                                 <li class="nav-item">
                                     <a class="nav-link" asp-area="" asp-controller="Buddy" asp-action="TaskStatus">
@@ -59,23 +59,15 @@
                                     </a>
                                 </li>
                             }
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Calendar" asp-action="Index">
-                                    <i class="bi bi-calendar-event"></i> Kalendarz
-                                </a>
-                            </li>
-                            @if (User.IsInRole("Nowy"))
+                            @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="UserCoursesList" asp-action="Index">
-                                        <i class="bi bi-book"></i> My courses
+                                    <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="AdminPanel">
+                                        <i class="bi bi-book"></i> Admin Panel
                                     </a>
                                 </li>
                             }
-                            
+
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Chat" asp-action="UserList">
                                     <i class="bi bi-chat-dots"></i> Chat
@@ -97,7 +89,7 @@
                             <li class="nav-item" style="display: flex; align-items: center;">
                                 @await Component.InvokeAsync("NotificationBell")
                             </li>
-                                <li class="nav-item">
+                            <li class="nav-item">
                                 <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                     <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
                                 </form>

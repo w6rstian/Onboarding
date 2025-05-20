@@ -28,6 +28,10 @@ namespace Onboarding.Controllers
 		{
 			return View();
 		}
+		public IActionResult UserPanel()
+		{
+			return View();
+		}
 		[HttpGet]
 		public async Task<IActionResult> MyAccount()
 		{

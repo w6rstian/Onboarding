@@ -39,7 +39,7 @@
         @if (User.IsInRole("Nowy"))
         {
             <li class="nav-item">
-                <a class="btn btn-primary btn-block mt-3 nav-link" id="main-page" asp-area="" asp-controller="User" asp-action="MainPage">Przejdź do panelu</a>
+                <a class="btn btn-primary btn-block mt-3 nav-link" id="main-page" asp-area="" asp-controller="User" asp-action="UserPanel">Przejdź do panelu</a>
             </li>
         }
         @if (User.IsInRole("HR"))

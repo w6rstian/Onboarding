@@ -18,6 +18,7 @@
     <Compile Remove="Views\Home\ValuesController.cs" />
     <Compile Remove="Views\Tests\Execute.cs" />
     <Compile Remove="Views\Tests\Execute.cshtml.cs" />
+    <Compile Remove="Views\User\UserPanel.cshtml.cs" />
   </ItemGroup>
 
 	<ItemGroup>
