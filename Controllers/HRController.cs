@@ -29,7 +29,10 @@ namespace Onboarding.Controllers
 		{
 			return View();
 		}
-
+		public IActionResult HRPanel()
+		{
+			return View();
+		}
 		[HttpPost]
 		public async Task<IActionResult> CreateEmployee(string name, string lastname, string email)
 		{

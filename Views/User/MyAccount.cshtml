@@ -1,59 +1,78 @@
-﻿@model User;
+﻿@model User
+
 @{
-    ViewData["Title"] = "Tworzenie Konta Pracownika";
+    ViewData["Title"] = "Zarządzanie kontem";
 }
-<head>
-    <link rel="stylesheet" href="~/css/colors.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-</head>
-<body style="background-color: var(--bg-color);">
 
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">Tworzenie konta nowego pracownika</h2>
-        <form asp-action="MyAccount" asp-controller="User" method="post">
-            <div class="mb-3">
-                <label for="name" class="form-label">Imię</label>
-                <input asp-for="Name" type="text" class="form-control" id="name" name="name" placeholder="Wprowadź imię">
-            </div>
-            <div class="mb-3">
-                <label for="lastname" class="form-label">Nazwisko</label>
-                <input asp-for="Surname" type="text" class="form-control" id="lastname" name="lastname" placeholder="Wprowadź nazwisko">
-            </div>
-            <div class="mb-3">
-                <label for="phone" class="form-label">Numer telefonu</label>
-                <input asp-for="PhoneNumber" type="text" class="form-control" id="phone" name="phone" placeholder="Wprowadź numer telefonu">
-            </div>
-            <div class="mb-3">
-                <label for="dept" class="form-label">Dział</label>
-                <input asp-for="Department" type="text" class="form-control" id="dept" name="dept" placeholder="Wprowadź nazwę działu">
-            </div>
-            <div class="mb-3">
-                <label for="pos" class="form-label">Stanowisko</label>
-                <input asp-for="Position" type="text" class="form-control" id="pos" name="pos" placeholder="Wprowadź nazwę stanowiska">
-            </div>
+<div class="container-custom">
+    <h2 class="header-custom text-center">Zarządzanie kontem</h2>
 
-            <button type="submit" class="btn btn-primary">Edytuj dane</button>
-        </form>
-    </div>
-</body>
-<script>
-    // Sprawdzanie, czy jest jakaś wiadomość do wyświetlenia
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <text>
-            console.log('Udalo sie zrobic update!!!!');
-        </text>
-    }
-	else if (TempData["ErrorMessage"] != null)
-	{
-		<text>
-				console.log('Nie udalo sie zrobic update!!!!');
-		</text>
-	}
-    else
-    {
-        <text>
-                    console.log('cos kompletenie jest nie tak');
-        </text>
-    }
-</script>
+    <form asp-action="MyAccount" asp-controller="User" method="post">
+        <div class="form-group with-icon">
+            <label for="name" class="control-label">Imię</label>
+            <i class="bi bi-person form-icon"></i>
+            <input asp-for="Name" type="text" class="form-control" id="name" name="name" placeholder="Wprowadź imię" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group with-icon">
+            <label for="lastname" class="control-label">Nazwisko</label>
+            <i class="bi bi-person-fill form-icon"></i>
+            <input asp-for="Surname" type="text" class="form-control" id="lastname" name="lastname" placeholder="Wprowadź nazwisko" />
+            <span asp-validation-for="Surname" class="text-danger"></span>
+        </div>
+
+        <div class="form-group with-icon">
+            <label for="phone" class="control-label">Numer telefonu</label>
+            <i class="bi bi-telephone form-icon"></i>
+            <input asp-for="PhoneNumber" type="text" class="form-control" id="phone" name="phone" placeholder="Wprowadź numer telefonu" />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="form-group with-icon">
+            <label for="dept" class="control-label">Dział</label>
+            <i class="bi bi-building form-icon"></i>
+            <input asp-for="Department" type="text" class="form-control" id="dept" name="dept" placeholder="Wprowadź nazwę działu" />
+            <span asp-validation-for="Department" class="text-danger"></span>
+        </div>
+
+        <div class="form-group with-icon">
+            <label for="pos" class="control-label">Stanowisko</label>
+            <i class="bi bi-briefcase form-icon"></i>
+            <input asp-for="Position" type="text" class="form-control" id="pos" name="pos" placeholder="Wprowadź nazwę stanowiska" />
+            <span asp-validation-for="Position" class="text-danger"></span>
+        </div>
+
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary btn-custom">Edytuj dane</button>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Powrót
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    console.log('Udalo sie zrobic update!!!!');
+            </text>
+        }
+        else if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    console.log('Nie udalo sie zrobic update!!!!');
+            </text>
+        }
+        else
+        {
+            <text>
+                    console.log('cos kompletnie jest nie tak');
+            </text>
+        }
+    </script>
+
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
