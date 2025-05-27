@@ -41,6 +41,8 @@
                 <p><strong>Tytuł:</strong> <span id="modalTitle"></span></p>
                 <p><strong>Data rozpoczęcia:</strong> <span id="modalStart"></span></p>
                 <p><strong>Data zakończenia:</strong> <span id="modalEnd"></span></p>
+                <p><strong>Uczestnicy:</strong></p>
+                <ul id="modalParticipants"></ul>
             </div>
         </div>
     </div>
@@ -72,6 +74,11 @@
 
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
             locale: 'pl',
             events: function(fetchInfo, successCallback, failureCallback) {
                 fetch('/Calendar/GetEvents?type=' + currentFilter)
@@ -83,6 +90,21 @@
                 document.getElementById('modalTitle').textContent = info.event.title;
                 document.getElementById('modalStart').textContent = info.event.start.toLocaleString();
                 document.getElementById('modalEnd').textContent = info.event.end ? info.event.end.toLocaleString() : "Brak daty zakończenia";
+                // wyświetlanie uczestników
+                const participantsList = document.getElementById('modalParticipants');
+                participantsList.innerHTML = '';
+
+                if (info.event.extendedProps.participants && info.event.extendedProps.participants.length > 0) {
+                    info.event.extendedProps.participants.forEach(function (p) {
+                        const li = document.createElement('li');
+                        li.textContent = p;
+                        participantsList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = 'Brak uczestników';
+                    participantsList.appendChild(li);
+                }
                 new bootstrap.Modal(document.getElementById('meetingModal')).show();
             }
         });

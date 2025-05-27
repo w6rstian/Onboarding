@@ -95,7 +95,7 @@ namespace Onboarding.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
 
             var meetingsQuery = _context.Meetings
-                .Include(m => m.Participants)
+                .Include(m => m.Participants).ThenInclude(p => p.User)
                 .Where(m =>
                     m.OrganizerId == currentUser.Id ||
                     m.Participants.Any(mp => mp.UserId == currentUser.Id));
@@ -112,7 +112,10 @@ namespace Onboarding.Controllers
                 title = m.Title ?? "Spotkanie",
                 start = m.Start.ToString("s"),
                 end = m.End.ToString("s"),
-                type = m.Type.ToString()
+                type = m.Type.ToString(),
+                participants = m.Participants
+                    .Select(p => $"{p.User.Name} {p.User.Surname} ({p.User.Email})")
+                    .ToList()
             }).ToList();
 
             // przykładowe spotkania żeby się dało testować
@@ -122,19 +125,22 @@ namespace Onboarding.Controllers
                     Title = "Spotkanie zespołu",
                     Start = "2025-05-10T10:00:00",
                     End = "2025-05-10T11:00:00",
-                    Type = "General"
+                    Type = "General",
+                    Participants = new List<string> { "Anna Nowak (anna@firma.pl)", "Jan Kowalski (jan@firma.pl)" }
                 },
                 new() {
                     Title = "Lunch z klientem",
                     Start = "2025-05-12T13:00:00",
                     End = "2025-05-12T14:00:00",
-                    Type = "General"
+                    Type = "General",
+                    Participants = new List<string> { "Magdalena Wójcik (magda@firma.pl)" }
                 },
                 new() {
                     Title = "Check-in z Basią",
                     Start = "2025-05-15T09:00:00",
                     End = "2025-05-15T10:00:00",
-                    Type = "CheckIn"
+                    Type = "CheckIn",
+                    Participants = new List<string> { "Basia Zielińska (basia@firma.pl)" }
                 }
             };
 
@@ -145,11 +151,13 @@ namespace Onboarding.Controllers
                     .ToList();
             }
 
-            events.AddRange(exampleEvents.Select(e => new {
+            events.AddRange(exampleEvents.Select(e => new
+            {
                 title = e.Title,
                 start = e.Start,
                 end = e.End,
-                type = e.Type
+                type = e.Type,
+                participants = e.Participants
             }));
 
             return Json(events);
@@ -161,5 +169,6 @@ namespace Onboarding.Controllers
         public string Start { get; set; } = null!;
         public string End { get; set; } = null!;
         public string Type { get; set; } = null!;
+        public List<string> Participants { get; set; } = new List<string>();
     }
 }
