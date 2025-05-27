@@ -1,21 +1,24 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Onboarding.Models;
-using Onboarding.ViewModels;
-using Onboarding.Services;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Onboarding.Data;
+using Onboarding.Models;
+using Onboarding.Services;
+using Onboarding.ViewModels;
 
 namespace Onboarding.Controllers
 {
     [Authorize(Roles = "Admin,Buddy,Mentor,Manager,HR")]
     public class AdminController : Controller
     {
+        private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly UserManager<User> _userManager;
 
-        public AdminController(RoleManager<IdentityRole<int>> roleManager, UserManager<User> userManager)
+        public AdminController(ApplicationDbContext context, RoleManager<IdentityRole<int>> roleManager, UserManager<User> userManager)
         {
+            _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
         }
@@ -164,6 +167,8 @@ namespace Onboarding.Controllers
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.Id);
             if (user == null) return NotFound();
+            
+            var isBuddyModified = user.BuddyId != model.BuddyId;
 
             user.Name = model.Name;
             user.Surname = model.Surname;
@@ -171,8 +176,24 @@ namespace Onboarding.Controllers
             user.BuddyId = model.BuddyId;
 
             var result = await _userManager.UpdateAsync(user);
+
             if (result.Succeeded)
             {
+                if (isBuddyModified)
+                {
+                    var buddy = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == model.BuddyId);
+                    if (buddy != null)
+                    {
+                        _context.Notifications.Add(
+                            new Notification {
+                                UserId = user.Id,
+                                User = user,
+                                Message = $"Przypisano ci nowego buddiego! Twój nowy buddy to {buddy.Name} {buddy.Surname}"
+                            }
+                        );
+                    }
+                }
+
                 return RedirectToAction("ManageUsers");
             }
 
