@@ -191,6 +191,7 @@ namespace Onboarding.Controllers
                                 Message = $"Przypisano ci nowego buddiego! Twój nowy buddy to {buddy.Name} {buddy.Surname}"
                             }
                         );
+                        await _context.SaveChangesAsync();
                     }
                 }
 
