@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Onboarding.Data;
+using Onboarding.Data.Enums;
 using Onboarding.Models;
 using Onboarding.ViewModels;
 
@@ -25,16 +26,17 @@ namespace Onboarding.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CreateCheckIn()
+        public async Task<IActionResult> CreateMeeting(MeetingType type)
         {
             var currentUser = await _userManager.GetUserAsync(User);
-            var newUsers = await _context.Users
-                .Where(u => u.BuddyId == currentUser.Id)
+            var users = await _context.Users
+                .Where(u => u.Id != currentUser.Id)
                 .ToListAsync();
 
-            var model = new CheckInMeetingViewModel
+            var model = new MeetingViewModel
             {
-                NewUsers = newUsers.Select(u => new SelectListItem
+                Type = type,
+                AllUsers = users.Select(u => new SelectListItem
                 {
                     Value = u.Id.ToString(),
                     Text = $"{u.Name} {u.Surname} ({u.Email})"
@@ -45,13 +47,13 @@ namespace Onboarding.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCheckIn(CheckInMeetingViewModel model)
+        public async Task<IActionResult> CreateMeeting(MeetingViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 var currentUser = await _userManager.GetUserAsync(User);
-                model.NewUsers = await _context.Users
-                    .Where(u => u.BuddyId == currentUser.Id)
+                model.AllUsers = await _context.Users
+                    .Where(u => u.Id != currentUser.Id)
                     .Select(u => new SelectListItem
                     {
                         Value = u.Id.ToString(),
@@ -61,16 +63,25 @@ namespace Onboarding.Controllers
                 return View(model);
             }
 
-            var buddy = await _userManager.GetUserAsync(User);
+            var organizer = await _userManager.GetUserAsync(User);
 
-            var meeting = new CheckInMeeting
+            var meeting = new Meeting
             {
-                BuddyId = buddy.Id,
-                NewUserId = model.NewUserId,
+                OrganizerId = organizer.Id,
                 Start = model.Start,
                 End = model.End,
-                Title = model.Title ?? "Check-In"
+                Title = model.Title ?? "Spotkanie",
+                Type = model.Type
             };
+
+            foreach (var userId in model.SelectedUsersIds)
+            {
+                var participant = new MeetingParticipant
+                {
+                    UserId = int.Parse(userId),
+                };
+                meeting.Participants.Add(participant);
+            }
 
             _context.Add(meeting);
             await _context.SaveChangesAsync();
@@ -79,38 +90,85 @@ namespace Onboarding.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetEvents()
+        public async Task<JsonResult> GetEvents(string? type)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
-            var meetings = await _context.CheckInMeetings
-                .Where(m => m.BuddyId == currentUser.Id || m.NewUserId == currentUser.Id)
-                .ToListAsync();
+            var meetingsQuery = _context.Meetings
+                .Include(m => m.Participants).ThenInclude(p => p.User)
+                .Where(m =>
+                    m.OrganizerId == currentUser.Id ||
+                    m.Participants.Any(mp => mp.UserId == currentUser.Id));
+
+            if (!string.IsNullOrEmpty(type) && Enum.TryParse<MeetingType>(type, out var parsedType))
+            {
+                meetingsQuery = meetingsQuery.Where(m => m.Type == parsedType);
+            }
+
+            var meetings = await meetingsQuery.ToListAsync();
 
             var events = meetings.Select(m => new
             {
-                title = m.Title ?? "Check-In",
+                title = m.Title ?? "Spotkanie",
                 start = m.Start.ToString("s"),
-                end = m.End.ToString("s")
+                end = m.End.ToString("s"),
+                type = m.Type.ToString(),
+                participants = m.Participants
+                    .Select(p => $"{p.User.Name} {p.User.Surname} ({p.User.Email})")
+                    .ToList()
             }).ToList();
 
-            var exampleEvents = new[]
+            // przykładowe spotkania żeby się dało testować
+            var exampleEvents = new List<ExampleEvent>
             {
-                new {
-                    title = "Spotkanie zespołu",
-                    start = "2025-05-10T10:00:00",
-                    end = "2025-05-10T11:00:00"
+                new() {
+                    Title = "Spotkanie zespołu",
+                    Start = "2025-05-10T10:00:00",
+                    End = "2025-05-10T11:00:00",
+                    Type = "General",
+                    Participants = new List<string> { "Anna Nowak (anna@firma.pl)", "Jan Kowalski (jan@firma.pl)" }
                 },
-                new {
-                    title = "Lunch z klientem",
-                    start = "2025-05-12T13:00:00",
-                    end = "2025-05-12T14:00:00"
+                new() {
+                    Title = "Lunch z klientem",
+                    Start = "2025-05-12T13:00:00",
+                    End = "2025-05-12T14:00:00",
+                    Type = "General",
+                    Participants = new List<string> { "Magdalena Wójcik (magda@firma.pl)" }
+                },
+                new() {
+                    Title = "Check-in z Basią",
+                    Start = "2025-05-15T09:00:00",
+                    End = "2025-05-15T10:00:00",
+                    Type = "CheckIn",
+                    Participants = new List<string> { "Basia Zielińska (basia@firma.pl)" }
                 }
             };
 
-            events.AddRange(exampleEvents);
+            if (!string.IsNullOrEmpty(type))
+            {
+                exampleEvents = exampleEvents
+                    .Where(e => e.Type == type)
+                    .ToList();
+            }
+
+            events.AddRange(exampleEvents.Select(e => new
+            {
+                title = e.Title,
+                start = e.Start,
+                end = e.End,
+                type = e.Type,
+                participants = e.Participants
+            }));
 
             return Json(events);
         }
+    }
+    public class ExampleEvent
+    {
+        public string Title { get; set; } = null!;
+        public string Start { get; set; } = null!;
+        public string End { get; set; } = null!;
+        public string Type { get; set; } = null!;
+        public List<string> Participants { get; set; } = new List<string>();
     }
 }
