@@ -42,7 +42,7 @@ namespace Onboarding.Controllers
                 .Where(n => n.Buddy == currentUser)
                 .Include(n => n.UserCourses)
                     .ThenInclude(uc => uc.Course)
-                        .ThenInclude(c => c.Mentor) 
+                        .ThenInclude(c => c.Mentor)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -105,12 +105,12 @@ namespace Onboarding.Controllers
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
-var tasks = await _context.UserTasks
-    .Where(t => t.user.Buddy == currentUser)
-    .Include(t => t.Task)
-        .ThenInclude(task => task.Course)
-    .Include(t => t.user)
-    .ToListAsync();
+            var tasks = await _context.UserTasks
+                .Where(t => t.user.Buddy == currentUser)
+                .Include(t => t.Task)
+                    .ThenInclude(task => task.Course)
+                .Include(t => t.user)
+                .ToListAsync();
 
 
 
