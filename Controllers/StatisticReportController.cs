@@ -211,10 +211,10 @@ namespace Onboarding.Controllers
 
             return Json(tasks);
         }
-        /*
-        public async Task<IActionResult> GenerateNewUserReportPdf(int userId)
+        [HttpGet]
+        public async Task<IActionResult> GetNewUserDetails(int userId)
         {
-            // Pobierz użytkownika z buddy i kursami
+            // 1) Pobierz użytkownika wraz z nawigacją do Buddy i powiązanych kursów
             var user = await _context.Users
                 .Include(u => u.Buddy)
                 .Include(u => u.UserCourses).ThenInclude(uc => uc.Course)
@@ -223,63 +223,52 @@ namespace Onboarding.Controllers
             if (user == null)
                 return NotFound();
 
-            // Pobierz taski użytkownika osobno
+            // 2) Pobierz wszystkie zadania przypisane temu użytkownikowi (UserTasks)
             var userTasks = await _context.UserTasks
-                .Include(ut => ut.Task)
                 .Where(ut => ut.UserId == userId)
+                .Include(ut => ut.Task)
+                .Select(ut => new
+                {
+                    TaskId = ut.Task.Id,
+                    TaskTitle = ut.Task.Title,
+                    Status = ut.Status.ToString(),     // przyjmujemy enum StatusTask
+                    Grade = ut.Grade                   // ewentualna ocena/feedback
+                })
                 .ToListAsync();
 
-            // Pobierz wyniki testów użytkownika (UserId w UserTestResult to string)
+            // 3) Pobierz wszystkie wyniki testów (UserTestResults) – w DB UserId przechowywany jako string
             var userIdString = user.Id.ToString();
             var userTestResults = await _context.UserTestResults
-                .Include(utr => utr.Test)
                 .Where(utr => utr.UserId == userIdString)
+                .Include(utr => utr.Test)
+                .Select(utr => new
+                {
+                    TestId = utr.Test.Id,
+                    TestName = utr.Test.Name,
+                    CorrectAnswers = utr.CorrectAnswers
+                })
                 .ToListAsync();
 
-            // Feedbacki pomijamy, bo brak klasy i DbSet
-
-            var pdfBytes = GeneratePdfForNewUser(user, userTasks, userTestResults);
-
-            return File(pdfBytes, "application/pdf", $"Raport_Nowy_{user.Name}_{user.Surname}.pdf");
-        }
-
-        private byte[] GeneratePdfForNewUser(User user, List<UserTask> userTasks, List<UserTestResult> userTestResults)
-        {
-            QuestPDF.Settings.License = LicenseType.Community;
-            var document = Document.Create(container =>
+            // 4) Zbuduj obiekt JSON do zwrócenia
+            var result = new
             {
-                container.Page(page =>
-                {
-                    page.Margin(20);
-                    page.Header().Text($"Raport dla użytkownika {user.Name} {user.Surname}").FontSize(20).Bold();
-                    page.Content().Stack(stack =>
+                UserId = user.Id,
+                UserName = $"{user.Name} {user.Surname}",
+                BuddyName = user.Buddy != null
+                    ? $"{user.Buddy.Name} {user.Buddy.Surname}"
+                    : "Brak",
+                Courses = user.UserCourses
+                    .Select(uc => new
                     {
-                        stack.Item().Text($"Buddy: {(user.Buddy != null ? user.Buddy.Name + " " + user.Buddy.Surname : "Brak")}");
+                        CourseId = uc.Course.Id,
+                        CourseName = uc.Course.Name
+                    })
+                    .ToList(),
+                Tasks = userTasks,
+                TestResults = userTestResults
+            };
 
-                        stack.Item().Text("Kursy przypisane:");
-                        foreach (var uc in user.UserCourses)
-                        {
-                            stack.Item().Text($"- {uc.Course.Name}");
-                        }
-
-                        stack.Item().Text("Postęp w taskach:");
-                        foreach (var ut in userTasks)
-                        {
-                            var statusText = ut.Status == StatusTask.Completed ? "ukończone" : "w trakcie";
-                            var gradeText = !string.IsNullOrWhiteSpace(ut.Grade) ? $" | Feedback: {ut.Grade}" : "";
-                            stack.Item().Text($"- {ut.Task.Title}: {statusText}{gradeText}");
-                        }
-
-                        stack.Item().Text("Postęp w testach:");
-                        foreach (var utr in userTestResults)
-                        {
-                            stack.Item().Text($"- {utr.Test.Name}: poprawnych odpowiedzi {utr.CorrectAnswers}");
-                        }
-                    });
-                });
-            });
-
-            return document.GeneratePdf();
-        }*/
+            return Json(result);
+        }
     }
 }

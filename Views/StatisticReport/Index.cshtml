@@ -189,6 +189,63 @@
 
             initCharts();
         });
+                $('.show-new-user-report').click(function () {
+            var userId = $(this).data('userid');
+            if (!userId) return;
+
+            $.getJSON('@Url.Action("GetNewUserDetails", "StatisticReport")', { userId: userId }, function (data) {
+                if (!data) return;
+
+                // Ustaw nagłówki
+                $('#reportUserName').text(data.userName);
+                $('#reportBuddyName').text(data.buddyName);
+                $('#reportHeader').text('Raport użytkownika: ' + data.userName);
+
+                // Wypełnij tabelę kursów
+                var coursesHtml = '';
+                if (data.courses && data.courses.length > 0) {
+                    $.each(data.courses, function (i, c) {
+                        coursesHtml += '<tr><td>' + c.courseName + '</td></tr>';
+                    });
+                } else {
+                    coursesHtml = '<tr><td class="text-muted">Brak przypisanych kursów.</td></tr>';
+                }
+                $('#reportCoursesTable tbody').html(coursesHtml);
+
+                // Wypełnij tabelę zadań
+                var tasksHtml = '';
+                if (data.tasks && data.tasks.length > 0) {
+                    $.each(data.tasks, function (i, t) {
+                        var gradeText = t.grade ? t.grade : '-';
+                        tasksHtml += '<tr>' +
+                            '<td>' + t.taskTitle + '</td>' +
+                            '<td>' + t.status + '</td>' +
+                            '<td>' + gradeText + '</td>' +
+                            '</tr>';
+                    });
+                } else {
+                    tasksHtml = '<tr><td colspan="3" class="text-muted">Brak zadań.</td></tr>';
+                }
+                $('#reportTasksTable tbody').html(tasksHtml);
+
+                // Wypełnij tabelę wyników testów
+                var testsHtml = '';
+                if (data.testResults && data.testResults.length > 0) {
+                    $.each(data.testResults, function (i, tr) {
+                        testsHtml += '<tr>' +
+                            '<td>' + tr.testName + '</td>' +
+                            '<td>' + tr.correctAnswers + '</td>' +
+                            '</tr>';
+                    });
+                } else {
+                    testsHtml = '<tr><td colspan="2" class="text-muted">Brak wyników testów.</td></tr>';
+                }
+                $('#reportTestsTable tbody').html(testsHtml);
+
+                // Pokaż kontener z raportem
+                $('#newUserReport').slideDown();
+            });
+        });
     </script>
 }
 
@@ -260,17 +317,18 @@
             </div>
         </div>
     </div>
-    @*
-    <h2 class="mb-4">Raporty PDF dla nowych użytkowników</h2>
+    <div class="row mt-5">
+        <div class="col-md-12">
+            <h2>Użytkownicy o roli "Nowy"</h2>
 
-    <div class="card mb-4">
-        <div class="card-body">
+            @* Jeśli masz właściwość Model.NewUsers, to wypełniamy tabelę *@
             @if (Model.NewUsers != null && Model.NewUsers.Any())
             {
-                <table class="table table-striped">
-                    <thead>
+                <table class="table table-bordered">
+                    <thead class="table-light">
                         <tr>
-                            <th>Użytkownik</th>
+                            <th>Imię i nazwisko</th>
+                            <th>Login</th>
                             <th>Akcja</th>
                         </tr>
                     </thead>
@@ -279,10 +337,13 @@
                         {
                             <tr>
                                 <td>@($"{newUser.Name} {newUser.Surname}")</td>
+                                <td>@newUser.UserName</td>
                                 <td>
-                                    <a class="btn btn-primary btn-sm" href="@Url.Action("GenerateNewUserReportPdf", "StatisticReport", new { userId = newUser.Id })" target="_blank">
-                                        Generuj PDF
-                                    </a>
+                                    <button type="button"
+                                            class="btn btn-sm btn-primary show-new-user-report"
+                                            data-userid="@newUser.Id">
+                                        Pokaż raport
+                                    </button>
                                 </td>
                             </tr>
                         }
@@ -294,6 +355,72 @@
                 <p class="text-muted">Brak nowych użytkowników.</p>
             }
         </div>
-    </div>*@
+    </div>
+
+    <!-- === Kontener: szczegółowy raport dla wybranego "Nowego" użytkownika === -->
+    <div id="newUserReport" class="row mt-4" style="display:none;">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h3 id="reportHeader">Raport użytkownika</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Imię i nazwisko + Buddy -->
+                    <div class="mb-4">
+                        <p><strong>Użytkownik:</strong> <span id="reportUserName"></span></p>
+                        <p><strong>Buddy:</strong> <span id="reportBuddyName"></span></p>
+                    </div>
+
+                    <!-- Tabela: Kursy przypisane -->
+                    <div class="mb-4">
+                        <h5>Kursy przypisane:</h5>
+                        <table class="table table-sm table-striped" id="reportCoursesTable">
+                            <thead>
+                                <tr>
+                                    <th>Nazwa kursu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- wypełniamy AJAX-em -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tabela: Postęp w zadaniach -->
+                    <div class="mb-4">
+                        <h5>Postęp w zadaniach:</h5>
+                        <table class="table table-sm table-striped" id="reportTasksTable">
+                            <thead>
+                                <tr>
+                                    <th>Tytuł zadania</th>
+                                    <th>Status</th>
+                                    <th>Feedback / Ocena</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- wypełniamy AJAX-em -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tabela: Wyniki testów -->
+                    <div class="mb-4">
+                        <h5>Wyniki testów:</h5>
+                        <table class="table table-sm table-striped" id="reportTestsTable">
+                            <thead>
+                                <tr>
+                                    <th>Nazwa testu</th>
+                                    <th>Poprawne odpowiedzi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- wypełniamy AJAX-em -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div> <!-- koniec .card-body -->
+            </div> <!-- koniec .card -->
+        </div> <!-- koniec .col -->
+    </div>
 
 </div>
