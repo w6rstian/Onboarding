@@ -4,75 +4,95 @@
     ViewData["Title"] = "Zarządzanie kontem";
 }
 
-<div class="container-custom">
-    <h2 class="header-custom text-center">Zarządzanie kontem</h2>
+<style>
+    .account-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
 
-    <form asp-action="MyAccount" asp-controller="User" method="post">
-        <div class="form-group with-icon">
-            <label for="name" class="control-label">Imię</label>
-            <i class="bi bi-person form-icon"></i>
-            <input asp-for="Name" type="text" class="form-control" id="name" name="name" placeholder="Wprowadź imię" />
-            <span asp-validation-for="Name" class="text-danger"></span>
-        </div>
+    .account-header {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
 
-        <div class="form-group with-icon">
-            <label for="lastname" class="control-label">Nazwisko</label>
-            <i class="bi bi-person-fill form-icon"></i>
-            <input asp-for="Surname" type="text" class="form-control" id="lastname" name="lastname" placeholder="Wprowadź nazwisko" />
-            <span asp-validation-for="Surname" class="text-danger"></span>
-        </div>
+    .info-block {
+        background-color: white;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
 
-        <div class="form-group with-icon">
-            <label for="phone" class="control-label">Numer telefonu</label>
-            <i class="bi bi-telephone form-icon"></i>
-            <input asp-for="PhoneNumber" type="text" class="form-control" id="phone" name="phone" placeholder="Wprowadź numer telefonu" />
-            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-        </div>
+        .info-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
 
-        <div class="form-group with-icon">
-            <label for="dept" class="control-label">Dział</label>
-            <i class="bi bi-building form-icon"></i>
-            <input asp-for="Department" type="text" class="form-control" id="dept" name="dept" placeholder="Wprowadź nazwę działu" />
-            <span asp-validation-for="Department" class="text-danger"></span>
-        </div>
+    .info-label {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-bottom: 5px;
+    }
 
-        <div class="form-group with-icon">
-            <label for="pos" class="control-label">Stanowisko</label>
-            <i class="bi bi-briefcase form-icon"></i>
-            <input asp-for="Position" type="text" class="form-control" id="pos" name="pos" placeholder="Wprowadź nazwę stanowiska" />
-            <span asp-validation-for="Position" class="text-danger"></span>
-        </div>
+    .info-value {
+        color: #2c3e50;
+        font-size: 1.1em;
+        font-weight: 500;
+    }
 
-        <div class="form-group text-center">
-            <button type="submit" class="btn btn-primary btn-custom">Edytuj dane</button>
-            <a href="javascript:history.back()" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Powrót
-            </a>
-        </div>
-    </form>
+    .btn-custom {
+        padding: 8px 20px;
+        border-radius: 20px;
+        transition: transform 0.2s;
+    }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+        }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
+
+<div class="account-container">
+    <h2 class="account-header">Zarządzanie kontem</h2>
+
+    <div class="info-block">
+        <div class="info-label">Imię:</div>
+        <div class="info-value">@Model.Name</div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Nazwisko:</div>
+        <div class="info-value">@Model.Surname</div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Numer telefonu:</div>
+        <div class="info-value">@Model.PhoneNumber</div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Dział:</div>
+        <div class="info-value">@Model.Department</div>
+    </div>
+
+    <div class="info-block">
+        <div class="info-label">Stanowisko:</div>
+        <div class="info-value">@Model.Position</div>
+    </div>
+
+    <div class="form-group text-center">
+        <a asp-action="UserSettings" asp-controller="User" class="btn btn-primary btn-custom">
+            <i class="bi bi-pencil-square"></i> Edytuj dane
+        </a>
+    </div>
 </div>
-
-@section Scripts {
-    <script>
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <text>
-                    console.log('Udalo sie zrobic update!!!!');
-            </text>
-        }
-        else if (TempData["ErrorMessage"] != null)
-        {
-            <text>
-                    console.log('Nie udalo sie zrobic update!!!!');
-            </text>
-        }
-        else
-        {
-            <text>
-                    console.log('cos kompletnie jest nie tak');
-            </text>
-        }
-    </script>
-
-    @await Html.PartialAsync("_ValidationScriptsPartial")
-}
