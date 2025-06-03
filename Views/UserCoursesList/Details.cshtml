@@ -146,6 +146,18 @@
 <div class="course-details-container">
     <h2 class="course-header">Szczegóły kursu</h2>
 
+    @if (Model.Image != null)
+{
+    <div class="detail-item">
+        <div class="detail-content d-flex justify-content-center">
+            <img src="@Url.Action("GetCourseImage", "Courses", new { id = Model.Id })"
+                 alt="Obraz kursu"
+                 style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);" />
+        </div>
+    </div>
+}
+
+
     <div class="details-card">
         <div class="detail-item">
             <div class="detail-icon">

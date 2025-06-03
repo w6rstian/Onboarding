@@ -1,4 +1,4 @@
-﻿@model Onboarding.Models.Course
+﻿@model Onboarding.ViewModels.CourseEditViewModel
 
 @{
     ViewData["Title"] = "Edytuj kurs";
@@ -67,13 +67,27 @@
     <h2 class="course-header">Edytuj kurs</h2>
 
     <div class="section-card">
-        <form asp-action="Edit">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <input type="hidden" asp-for="Id" />
 
             <div class="mb-3">
-                <label asp-for="Name" class="form-label section-title"></label>
+                <label asp-for="Name" class="form-label section-title">Nazwa kursu</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            @if (Model.ExistingImage != null)
+            {
+                <div class="mb-3 text-center">
+                    <label class="form-label section-title">Aktualny obraz</label><br />
+                    <img src="@Url.Action("GetCourseImage", "Courses", new { id = Model.Id })" style="max-height: 250px;" class="rounded shadow-sm" />
+                </div>
+            }
+
+            <div class="mb-3">
+                <label asp-for="ImageFile" class="form-label section-title">Zmień obraz</label>
+                <input asp-for="ImageFile" class="form-control" type="file" accept="image/*" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
 
             <div class="mt-4">

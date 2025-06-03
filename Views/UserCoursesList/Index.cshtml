@@ -93,29 +93,40 @@
     }
 </style>
 
-<div class="courses-container">
-    <h2 class="courses-header">Moje kursy</h2>
-    <a href="@Url.Action("RateBuddy", "Rewards")" class="btn btn-info ml-3">Oceń Buddy'ego</a>
+<div class="container-custom">
+    <h2 class="header-custom">Moje kursy</h2>
+    <a href="@Url.Action("RateBuddy", "Rewards")" class="btn btn-info mb-3">Oceń Buddy'ego</a>
 
     @if (Model.Any())
     {
-        <div class="courses-list">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mt-2">
             @foreach (var course in Model)
             {
-                <div class="course-card">
-                    <div class="course-info">
-                        <div class="course-icon">
-                            <i class="bi bi-book"></i> <!-- Ikona książki -->
+                <div class="col">
+                    <div class="card h-100 shadow-sm rounded">
+                        <div class="card-img-top overflow-hidden" style="height: 200px;">
+                            @if (course.Image != null)
+                            {
+                                <img src="@Url.Action("GetCourseImage", "Courses", new { id = course.Id })"
+                                     alt="Obraz kursu"
+                                     class="w-100 h-100 object-fit-cover" />
+                            }
+                            else
+                            {
+                                <div class="d-flex justify-content-center align-items-center bg-light text-muted w-100 h-100">
+                                    <i class="bi bi-image" style="font-size: 3rem;"></i>
+                                </div>
+                            }
                         </div>
-                        <div class="course-details">
-                            <div class="course-id">ID: @course.Id</div>
-                            <div class="course-name">@course.Name</div>
+                        <div class="card-body text-center">
+                            <h5 class="card-title fw-bold">@course.Name</h5>
                         </div>
-                    </div>
-                    <div class="course-actions">
-                        <a href="@Url.Action("Details", "UserCoursesList", new { id = course.Id })" class="btn btn-info btn-custom">
-                            <i class="bi bi-eye"></i> Szczegóły
-                        </a>
+                        <div class="card-footer text-center">
+                            <a href="@Url.Action("Details", "UserCoursesList", new { id = course.Id })"
+                               class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-eye"></i> Szczegóły
+                            </a>
+                        </div>
                     </div>
                 </div>
             }
@@ -123,7 +134,7 @@
     }
     else
     {
-        <div class="no-courses">
+        <div class="no-data text-center mt-4">
             <i class="bi bi-emoji-frown" style="font-size: 2em;"></i>
             <p>Nie jesteś przypisany do żadnego kursu.</p>
         </div>

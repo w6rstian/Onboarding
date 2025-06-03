@@ -106,11 +106,26 @@ namespace Onboarding.Controllers
 
             try
             {
-                var course = new Course
+				byte[] imageBytes = null;
+				string imageMimeType = null;
+
+				if (viewModel.ImageFile != null && viewModel.ImageFile.Length > 0)
+				{
+					using (var ms = new MemoryStream())
+					{
+						await viewModel.ImageFile.CopyToAsync(ms);
+						imageBytes = ms.ToArray();
+						imageMimeType = viewModel.ImageFile.ContentType;
+					}
+				}
+
+				var course = new Course
                 {
                     Name = viewModel.CourseName,
-                    MentorId = viewModel.MentorId 
-                };
+                    MentorId = viewModel.MentorId,
+					Image = imageBytes,
+					ImageMimeType = imageMimeType
+				};
                 _context.Courses.Add(course);
                 await _context.SaveChangesAsync();
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Onboarding.Data;
 using Onboarding.Models;
+using Onboarding.ViewModels;
 
 namespace Onboarding.Controllers
 {
@@ -75,59 +76,78 @@ namespace Onboarding.Controllers
             return View(course);
         }
 
-        // GET: Courses/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		// GET: Courses/Edit/5
+		public async Task<IActionResult> Edit(int id)
+		{
+			var course = await _context.Courses.FindAsync(id);
+			if (course == null)
+				return NotFound();
 
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-            return View(course);
-        }
+			var model = new CourseEditViewModel
+			{
+				Id = course.Id,
+				Name = course.Name,
+				ExistingImage = course.Image,
+				ExistingImageMimeType = course.ImageMimeType
+			};
 
-        // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Course course)
-        {
-            if (id != course.Id)
-            {
-                return NotFound();
-            }
+			return View(model);
+		}
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseExists(course.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(course);
-        }
 
-        // GET: Courses/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+		// POST: Courses/Edit/5
+		// To protect from overposting attacks, enable the specific properties you want to bind to.
+		// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(int id, CourseEditViewModel model)
+		{
+			Console.WriteLine(">>> Edit POST wywołane <<<");
+
+			if (id != model.Id)
+				return NotFound();
+
+			if (!ModelState.IsValid)
+			{
+				Console.WriteLine("ModelState = invalid");
+				foreach (var entry in ModelState)
+				{
+					foreach (var error in entry.Value.Errors)
+					{
+						Console.WriteLine($"[VALIDATION ERROR] {entry.Key}: {error.ErrorMessage}");
+					}
+				}
+
+				return View(model);
+			}
+
+			var course = await _context.Courses.FindAsync(id);
+			if (course == null)
+				return NotFound();
+
+			Console.WriteLine($"Stara nazwa: {course.Name}, Nowa: {model.Name}");
+
+			course.Name = model.Name;
+
+			if (model.ImageFile != null && model.ImageFile.Length > 0)
+			{
+				using var ms = new MemoryStream();
+				await model.ImageFile.CopyToAsync(ms);
+				course.Image = ms.ToArray();
+				course.ImageMimeType = model.ImageFile.ContentType;
+			}
+
+			await _context.SaveChangesAsync();
+
+			var confirm = await _context.Courses.FindAsync(model.Id);
+			Console.WriteLine($"Zapisano jako: {confirm.Name}");
+
+			return RedirectToAction(nameof(Index));
+		}
+
+
+		// GET: Courses/Delete/5
+		public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -163,5 +183,14 @@ namespace Onboarding.Controllers
         {
             return _context.Courses.Any(e => e.Id == id);
         }
-    }
+		public IActionResult GetCourseImage(int id)
+		{
+			var course = _context.Courses.FirstOrDefault(c => c.Id == id);
+			if (course == null || course.Image == null)
+				return NotFound();
+
+			return File(course.Image, course.ImageMimeType);
+		}
+
+	}
 }

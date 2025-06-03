@@ -29,11 +29,14 @@ namespace Onboarding.Services
 
             // Create sample courses
             var courses = new List<Course>();
-
-            var course1 = new Course
+			var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", "BaseImageCourse.jpg");
+			var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+			var course1 = new Course
             {
                 Name = "Introduction to Programming",
-            };
+				Image = imageBytes,
+				ImageMimeType = "image/jpeg"
+			};
 
             var task1 = new Task
             {
@@ -94,8 +97,10 @@ namespace Onboarding.Services
 
             var course2 = new Course
             {
-                Name = "Advanced C# Programming"
-            };
+                Name = "Advanced C# Programming",
+				Image = imageBytes,
+				ImageMimeType = "image/jpeg"
+			};
 
             var task3 = new Task
             {
