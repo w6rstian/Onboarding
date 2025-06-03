@@ -81,7 +81,44 @@ namespace Onboarding.Controllers
 
 			return View();
 		}
-		
-	}
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> UserSettings()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return View(user);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UserSettings(User model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
+
+            user.Name = model.Name;
+            user.Surname = model.Surname;
+            user.Department = model.Department;
+            user.Position = model.Position;
+            user.PhoneNumber = model.PhoneNumber;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Dane użytkownika zostały zaktualizowane.";
+                return RedirectToAction("MyAccount");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+
+    }
 
 }
