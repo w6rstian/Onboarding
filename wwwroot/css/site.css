@@ -256,3 +256,36 @@ h5 {
     color: var(--text-color);
     font-weight: normal;
 }
+
+#notifications-dropdown {
+    position: absolute;
+    top: 80%;
+    right: 0;
+    max-height: 75vh;
+    width: 20vw;
+    min-width: 300px;
+    overflow-y: auto;
+    overflow-wrap: break-word;
+    background: white;
+    border: 1px solid rgb(204, 204, 204);
+    padding: 10px 0;
+    z-index: 1000;
+}
+
+#notifications-dropdown hr:first-of-type {
+    display: none;
+}
+
+#notifications-dropdown .unread {
+    color: #000;
+    width: 300px;
+    background-color: #DDD;
+    padding: 10px;
+    font-weight: 400;
+}
+
+#notifications-dropdown .read {
+    color: #555;
+    width: 300px;
+    padding: 0 10px;
+}
