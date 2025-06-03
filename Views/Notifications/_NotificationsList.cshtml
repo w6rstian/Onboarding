@@ -3,8 +3,9 @@
 {
     foreach (var notification in Model)
     {
-        <div class="notification-item @(notification.IsRead ? "read" : "unread")" style="@(notification.IsRead ? "color: #888;" : "font-weight: bold;")">
-            @notification.Message
+        <hr/>
+        <div class="notification-item @(notification.IsRead ? "read" : "unread")">
+            <p>@notification.Message</p>
             <small style="display: block;">@notification.CreatedAt.ToString("MMM dd, yyyy HH:mm")</small>
         </div>
     }
